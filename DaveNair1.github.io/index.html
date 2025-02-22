@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DAVE NAIR - Web Dev Portfolio</title>
+
+  <!-- Font Awesome (v4.7) for icons -->
+  <link 
+    rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha512-..."
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <style>
+    /* ---------- Scroll Progress Bar ---------- */
+    #progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #121212;
+      z-index: 10000;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #02d463;
+    }
+
+    /* ---------- Retro Computer Terminal (Fixed Size on Desktop, Dynamic on Mobile) ---------- */
+    .retro-screen {
+      width: 800px;
+      height: 400px;
+      margin: 0 auto;
+      background: #000;
+      border: 16px solid #222;
+      border-radius: 10px;
+      box-shadow: 0 0 30px #02d463, inset 0 0 10px #02d463;
+      position: relative;
+      overflow: hidden;
+      /* Boot-up animation */
+      opacity: 0;
+      animation: bootup 3s ease-out forwards;
+    }
+    @keyframes bootup {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+        filter: brightness(0);
+      }
+      80% {
+        opacity: 1;
+        transform: scale(1.05);
+        filter: brightness(1.5);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+      }
+    }
+    /* Scanlines effect */
+    .retro-screen::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 2px,
+        rgba(2, 212, 99, 0.05) 2px,
+        rgba(2, 212, 99, 0.05) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* ---------- Terminal Header with Updated Window Controls ---------- */
+    .terminal-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #02d463;
+    }
+    .terminal-controls {
+      display: flex;
+      align-items: center;
+    }
+    .terminal-controls .control {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .terminal-controls .close {
+      background-color: #ff5f56;
+    }
+    .terminal-controls .minimize {
+      background-color: #ffbd2e;
+    }
+    .terminal-controls .maximize {
+      background-color: #27c93f;
+    }
+    .terminal-menu span {
+      margin-left: 15px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .terminal-menu span:hover {
+      color: #fff;
+    }
+
+    /* ---------- Dotted Heading (“DAVE NAIR”) with Gradual Reveal ---------- */
+    .dotted-heading {
+      margin-top: 40px;
+      text-align: left;
+      padding-left: 10px;
+      overflow: hidden;
+      clip-path: inset(100% 0 0 0);
+      animation: revealHeading 3s forwards;
+    }
+    @keyframes revealHeading {
+      to {
+        clip-path: inset(0 0 0 0);
+      }
+    }
+    .dotted-heading svg {
+      width: 100%;
+      height: auto;
+    }
+
+    /* ---------- Terminal text container (Retro Terminal Look) ---------- */
+    #terminal {
+      margin-top: 10px;
+      padding: 0 10px;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-y: auto;
+      max-height: calc(100% - 100px);
+      scroll-behavior: smooth;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      color: #02d463;
+      text-shadow: 0 0 5px #02d463;
+    }
+    #terminal::-webkit-scrollbar {
+      width: 8px;
+    }
+    #terminal::-webkit-scrollbar-track {
+      background: #000;
+    }
+    #terminal::-webkit-scrollbar-thumb {
+      background-color: #02d463;
+      border-radius: 4px;
+    }
+
+    /* ---------- Progress Bar in Terminal ---------- */
+    .install-progress-wrapper {
+      margin-top: 10px;
+    }
+    .install-progress-title {
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .install-progress-container {
+      width: 70%;
+      background: #333;
+      border: 1px solid #02d463;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .install-progress-bar {
+      height: 16px;
+      width: 0%;
+      background: #02d463;
+      transition: width 0.5s ease;
+    }
+
+    /* ---------- Blinking Cursor ---------- */
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #02d463;
+      margin-left: 2px;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    #resetTerminal {
+      display: none;
+      margin: 10px;
+      background: #02d463;
+      border: none;
+      color: #121212;
+      padding: 8px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #resetTerminal:hover {
+      opacity: 0.8;
+    }
+    /* Note: The Play Snake button has been removed in favor of "Press S to play game" */
+
+    /* ---------- Icon Rotation for Toggle Arrows ---------- */
+    .icon-toggle {
+      transition: transform 0.4s ease;
+    }
+    .icon-rotated {
+      transform: rotate(180deg);
+    }
+
+    /* ---------- RESET & BASE STYLES ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: "Open Sans", sans-serif;
+      background: #121212;
+      color: #f1f1f1;
+      line-height: 1.5;
+      padding-top: 4px;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ---------- Page Navbar ---------- */
+    nav {
+      position: fixed;
+      top: 4px;
+      width: 100%;
+      background: #1f1f1f;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+    .nav-links a {
+      color: #f1f1f1;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #b3b3b3;
+    }
+    .hamburger {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #f1f1f1;
+    }
+
+    /* ---------- HERO SECTION ---------- */
+    .hero {
+      width: 100%;
+      height: 100vh;
+      padding-top: 70px;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+    .hero-down {
+      margin-top: 2rem;
+    }
+    .hero-down a {
+      display: inline-block;
+    }
+    .hero-down i {
+      font-size: 2rem;
+      color: #02d463;
+    }
+
+    /* ---------- SECTION WRAPPER ---------- */
+    .section {
+      width: 90%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 0;
+    }
+    .section-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    /* ---------- KEY SKILLS (Grid) ---------- */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      align-items: start;
+    }
+    .skill-card {
+      background: #1f1f1f;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .skill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .skill-card h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      color: #02d463;
+    }
+    .skill-card p {
+      font-size: 0.9rem;
+      color: #ccc;
+      line-height: 1.4;
+    }
+    .skill-toggle {
+      display: inline-block;
+      margin-top: 0.75rem;
+      cursor: pointer;
+      color: #02d463;
+      font-size: 0.85rem;
+    }
+    .skill-details {
+      max-height: 0;
+      overflow: hidden;
+      margin-top: 0.5rem;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+    .skill-details p {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #ddd;
+      margin-bottom: 1rem;
+    }
+    .skill-details img {
+      width: 100%;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+    }
+    .skill-resources {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .skill-resources a {
+      font-size: 0.75rem;
+      color: #02d463;
+      background: #333;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+    .skill-resources a:hover {
+      background: #02d463;
+      color: #121212;
+    }
+
+    /* ---------- EXPERIENCE (Grid) ---------- */
+    .experience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      align-items: start;
+    }
+    .exp-card {
+      background: #1f1f1f;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .exp-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .exp-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .exp-content {
+      padding: 1rem;
+    }
+    .exp-content h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+    .exp-content p {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: #ccc;
+    }
+    .exp-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .exp-links a {
+      font-size: 0.8rem;
+      color: #02d463;
+    }
+    .exp-toggle {
+      display: inline-block;
+      margin-top: 0.75rem;
+      cursor: pointer;
+      color: #02d463;
+      font-size: 0.85rem;
+    }
+    .exp-details {
+      max-height: 0;
+      overflow: hidden;
+      margin: 0 1rem;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+    .exp-details p {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #ddd;
+      margin-bottom: 1rem;
+    }
+    .exp-details img {
+      width: 100%;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+    }
+    .exp-resources {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .exp-resources a {
+      font-size: 0.75rem;
+      color: #02d463;
+      background: #333;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+    .exp-resources a:hover {
+      background: #02d463;
+      color: #121212;
+    }
+
+    /* ---------- ABOUT SECTION ---------- */
+    .about-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2rem;
+    }
+    .about-image {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #02d463;
+    }
+    .about-content {
+      max-width: 800px;
+    }
+    .about-content p {
+      line-height: 1.5;
+      color: #ccc;
+    }
+
+    /* ---------- CONTACT SECTION ---------- */
+    .contact-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .contact-link {
+      background: #1f1f1f;
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      color: #fff;
+    }
+    .contact-link:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .contact-link i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #02d463;
+    }
+    .contact-info {
+      text-align: center;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- RESUME SECTION ---------- */
+    .resume-download a {
+      text-decoration: none;
+    }
+
+    /* ---------- UP ARROW (above footer) ---------- */
+    .up-arrow {
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .up-arrow a {
+      display: inline-block;
+    }
+    .up-arrow i {
+      font-size: 2rem;
+      color: #02d5d5;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      background: #1f1f1f;
+      text-align: center;
+      color: #ccc;
+      padding: 1rem;
+    }
+    #user-ip {
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    /* ---------- MEDIA QUERIES (Responsive Adjustments) ---------- */
+    @media (max-width: 800px) {
+      .retro-screen {
+        width: 95%;
+        height: auto;
+        padding: 10px;
+        border: 8px solid #222;
+      }
+      #terminal {
+        font-size: 14px;
+      }
+      .dotted-heading svg text {
+        font-size: 40px;
+      }
+    }
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #1f1f1f;
+        width: 200px;
+        padding: 1rem;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .hamburger {
+        display: block;
+      }
+    }
+    @media (max-width: 480px) {
+      .retro-screen {
+        width: 90%;
+        height: 40vh;
+      }
+    }
+
+    /* ---------- Snake Modal Styles ---------- */
+    #snakeModal {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000; /* Fully opaque background */
+      z-index: 11000;
+      color: #02d463;
+      font-family: 'Courier New', monospace;
+      overflow: hidden; /* Prevent any scrolling within the modal */
+    }
+    #snakeModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: #222;
+    }
+    #snakeModal .modal-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    /* Enhanced Close Button */
+    #snakeModal .modal-header .close-modal {
+      cursor: pointer;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      background: #e74c3c;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    #snakeModal .modal-header .close-modal:hover {
+      background: #c0392b;
+    }
+    /* Make modal-content position relative so absolute children are positioned accordingly */
+    #snakeModal .modal-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100% - 40px);
+    }
+    /* Notification (error) styling – appears on top of scoreDisplay without moving layout */
+    #notif {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(231, 76, 60, 0.9);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      z-index: 2;
+      display: none;
+    }
+    #notif .close-notif {
+      margin-left: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    /* Score, game message, and restart button */
+    #scoreDisplay {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    /* (We now use #notif instead of #gameMessage for errors.) */
+    #snakeModal canvas {
+      border: 2px solid #02d463;
+      background: #000;
+    }
+    #snakeModal .instructions {
+      margin-top: 10px;
+    }
+    #snakeModal .mobile-controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    /* Mobile control buttons now show arrow symbols */
+    #snakeModal .mobile-controls button {
+      background: #02d463;
+      color: #121212;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    /* Restart button with refresh icon */
+    #restartSnakeButton {
+      display: none;
+      margin-top: 10px;
+      background: #02d463;
+      border: none;
+      color: #121212;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+    }
+    #restartSnakeButton:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress Bar -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- Page Navbar -->
+  <nav>
+    <div class="nav-brand"><code>DAVE NAIR</code></div>
+    <div class="hamburger"><i class="fa fa-bars"></i></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#resume">Resume</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION WITH RETRO TERMINAL -->
+  <section id="hero" class="hero">
+    <div class="retro-screen" id="retro-screen">
+      <!-- Terminal Header with Updated Window Controls & Menu -->
+      <div class="terminal-header">
+        <div class="terminal-controls">
+          <span class="control close"></span>
+          <span class="control minimize"></span>
+          <span class="control maximize"></span>
+        </div>
+        <div class="terminal-menu">
+          <ul class="nav-links">
+            <!-- <li><a href="#hero" style="color: #02d463;">Home</a></li> -->
+            <li><a href="#about" style="color: #02d463;">About</a></li>
+            <li><a href="#skills" style="color: #02d463;">Skills</a></li>
+            <li><a href="#experience" style="color: #02d463;">Experience</a></li>
+            <li><a href="#resume" style="color: #02d463;">Resume</a></li>
+            <li><a href="#contact" style="color: #02d463;">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Dotted Heading (Gradually Revealed) -->
+      <div class="dotted-heading">
+        <svg viewBox="0 0 600 100" preserveAspectRatio="xMinYMin meet">
+          <text x="0" y="70" 
+                font-family="Courier New, monospace" 
+                font-size="60" 
+                stroke="#02d463" 
+                stroke-width="2" 
+                stroke-linecap="round" 
+                stroke-dasharray="2,2" 
+                fill="none">
+            DAVE NAIR
+          </text>
+        </svg>
+      </div>
+      <!-- Terminal Content: The progress bar will appear here, then the typewriter text -->
+      <div id="terminal"></div>
+      <!-- Reboot Terminal Button (hidden until typing complete) -->
+      <button id="resetTerminal">Reboot Terminal</button>
+      <!-- (The Play Snake button has been removed in favor of "Press S to play game") -->
+    </div>
+    <!-- Down arrow button to scroll to About -->
+    <div class="hero-down" style="text-align: center; margin-top: 20px;">
+      <a href="#about" style="color: #02d463; font-size: 24px;">
+        <br>
+        <i class="fa fa-chevron-down"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="section">
+    <h2 class="section-title"><code>About Me</code></h2>
+    <div class="about-wrapper">
+      <img 
+        src="/DaveNair1.github.io/static/images/1709232116646.jpeg" 
+        alt="Dave Nair Portrait" 
+        class="about-image"
+      />
+      <div class="about-content" id="aboutContent">
+        <p>
+          Hello! I am <strong>Dave Nair</strong>, a web developer based in <strong>Melbourne</strong> who loves creating user-friendly websites and intuitive UI/UX designs. I focus on simplicity and attention to detail to build engaging interfaces.
+        </p>
+        <br/>
+        <p>
+          I follow proven methodologies to craft clean and reliable solutions, often developing modern single-page applications that deliver a smooth user experience.
+        </p>
+        <br/>
+        <p>
+          Let’s connect and explore how we can create digital experiences that are both attractive and functional.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY SKILLS SECTION -->
+  <section id="skills" class="section">
+    <h2 class="section-title"><code>Key Skills</code></h2>
+    <div class="skills-grid">
+      <!-- Skill Card 1: Django & Python -->
+      <div class="skill-card">
+        <h3><code>Django & Python</code></h3>
+        <p>
+          Develop robust backends with RESTful APIs, secure authentication and database integrations.
+        </p>
+        <span class="skill-toggle">
+          Expand Details 
+          <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+        </span>
+        <div class="skill-details">
+          <p>
+            I utilise Django's MVT architecture and ORM for clean, maintainable code. 
+            I also integrate testing frameworks like <code>PyTest</code> and <code>unittest</code> to ensure reliability.
+          </p>
+          <div class="skill-resources">
+            <a href="https://www.djangoproject.com/" target="_blank">Django Docs</a>
+            <a href="https://docs.pytest.org/en/stable/" target="_blank"><code>PyTest</code></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Card 2: Frontend Development -->
+      <div class="skill-card">
+        <h3><code>Frontend Development</code></h3>
+        <p>
+          Build interactive, responsive & modern front-ends with <code>HTMX</code>, <code>Alpine.js</code>, and <code>Tailwind CSS</code>.
+        </p>
+        <span class="skill-toggle">
+          Expand Details 
+          <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+        </span>
+        <div class="skill-details">
+          <p>
+            I build interactive SPAs using <code>HTMX</code> for seamless server communication, <code>Alpine.js</code> for lightweight reactivity, and <code>Tailwind CSS</code> for utility-first styling. My work often involves designing and implementing UI components based on Figma wireframes, ensuring consistency with the design system and improving user experience.
+          </p>
+          <div class="skill-resources">
+            <a href="https://htmx.org/" target="_blank">HTMX Docs</a>
+            <a href="https://www.figma.com/" target="_blank">Figma</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Card 3: Security Management & Governance -->
+      <div class="skill-card">
+        <h3><code>Security Management</code></h3>
+        <p>
+          Enhance resilience through robust security planning, governance, and cyber risk management.
+        </p>
+        <span class="skill-toggle">
+          Expand Details 
+          <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+        </span>
+        <div class="skill-details">
+          <p>
+            I apply industry standards like <code>ASVS</code> to architect secure systems and integrate <code>ISM</code> best practices to manage cyber risks. My approach encompasses security governance, change management, and continuous monitoring to ensure organisational resilience and compliance.
+          </p>
+          <div class="skill-resources">
+            <a href="https://github.com/OWASP/ASVS" target="_blank">ASVS Guidelines</a>
+            <a href="https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/ism" target="_blank">ISM Best Practices</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE SECTION -->
+  <section id="experience" class="section">
+    <h2 class="section-title"><code>Professional Experience</code></h2>
+    <div class="experience-grid">
+      <!-- Card 1 -->
+      <div class="exp-card">
+        <img 
+          src="/DaveNair1.github.io/static/images/software-developer-6521720_1280.jpg" 
+          alt="Junior Web Developer Image" 
+          class="exp-image"
+        />
+        <div class="exp-content">
+          <h3>Junior Web Developer</h3>
+          <p>
+            Currently spearheading secure, scalable web apps with Django, Tailwind CSS, Alpine.js, and Docker. 
+            Collaborate cross functionally using Agile, implementing best practices from ITIL 
+            and OWASP to ensure robust security and swift incident resolution.
+          </p>
+          <span class="exp-toggle">
+            Expand Details 
+            <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="exp-details" style="padding-bottom: 20px;">
+          <p>
+            <ul>
+              <li><code>• Enforce OWASP ASVS standards (authentication, encryption, secure session management)</code></li>
+              <li><code>• Integrate Docker based CI/CD pipelines for consistent testing and faster deployments</code></li>
+              <li><code>• Collaborate with UI/UX to refine designs, ensuring accessibility & performance</code></li>
+              <li><code>• Maintain detailed documentation for continuous improvement and onboarding</code></li>
+            </ul>
+          </p>
+          <div class="exp-resources">
+            <a href="https://www.atlassian.com/itsm/itil">ITIL Fundamentals</a>
+            <a href="https://www.geeksforgeeks.org/django-crud-create-retrieve-update-delete-function-based-views/"><code>Django</code> CRUD</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="exp-card">
+        <img 
+          src="/DaveNair1.github.io/static/images/programming-1873854_1280.png" 
+          alt="Intern Developer Image" 
+          class="exp-image"
+        />
+        <div class="exp-content">
+          <h3>Frontend Developer Intern</h3>
+          <p>
+            Contributed to UI/UX enhancements by developing a robust design system focused on typography, spacing, and colour palettes that ensured visual consistency and streamlined design processes. Created a landing page that significantly boosted user engagement.
+          </p>
+          <span class="exp-toggle">
+            Expand Details 
+            <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="exp-details" style="padding-bottom: 20px;">
+          <p>
+            <ul>
+              <li><code>• Crafted reusable components (e.g. modals, nav bars) for rapid feature development</code></li>
+              <li><code>• Streamlined sign-in UX, improving accessibility (WCAG guidelines) & mobile responsiveness</code></li>
+              <li><code>• Used Jira to manage tasks, track progress, and communicate with cross-functional teams</code></li>
+              <li><code>• Ensured code quality through peer reviews and Git version control best practices</code></li>
+            </ul>
+          </p>
+          <div class="exp-resources">
+            <a href="https://www.atlassian.com/software/confluence">Jira & Confluence</a>
+            <a href="https://www.figma.com/blog/design-systems-101-what-is-a-design-system/">Design Systems</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME SECTION -->
+  <section id="resume" class="section">
+    <h2 class="section-title"><code>Download Resume</code></h2>
+    <div class="resume-download" style="text-align: center;">
+      <a href="/DaveNair1.github.io/static/docs/Dave Nair BDO Graduate Program - Cyber Resume.pdf" download>
+        <img src="/DaveNair1.github.io/static/images/file-arrow-down-solid.svg" alt="Download Resume" style="width: 4rem; height: 4rem;">
+      </a>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="section">
+    <h2 class="section-title"><code>Let's Connect</code></h2>
+    <div class="contact-container">
+      <div class="contact-links">
+        <div class="contact-link">
+          <a href="mailto:davenair1@gmail.com">
+            <i class="fa fa-envelope"></i>
+          </a>
+        </div>
+        <div class="contact-link">
+          <a href="https://www.linkedin.com/in/davenair" target="_blank" rel="noopener noreferrer">
+            <i class="fa fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UP ARROW (scroll to top) -->
+  <div class="up-arrow">
+    <a href="#hero">
+      <i class="fa fa-arrow-up" style="color: #5d5d5d;"></i>
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p><code>&copy; 2025 DAVE NAIR - All Rights Reserved.</code></p>
+    <div id="user-ip"><code>Loading location and weather...</code></div>
+  </footer>
+
+  <!-- Snake Game Modal Overlay -->
+  <div id="snakeModal">
+    <div class="modal-header">
+      <h2>Snake Game</h2>
+      <span class="close-modal" id="closeSnakeModal">X</span>
+    </div>
+    <div class="modal-content">
+      <!-- Notification area: absolutely positioned so it overlays the score display -->
+      <div id="notif"></div>
+      <div id="scoreDisplay">Score: 0</div>
+      <canvas id="snakeCanvas" width="300" height="300"></canvas>
+      <!-- (gameMessage element is no longer used for errors) -->
+      <div class="instructions">Use WASD or Arrow keys to control the snake. On mobile, swipe or use the buttons below.</div>
+      <div class="mobile-controls">
+        <button data-dir="up">↑</button>
+        <button data-dir="left">←</button>
+        <button data-dir="down">↓</button>
+        <button data-dir="right">→</button>
+      </div>
+      <button id="restartSnakeButton"><i class="fa fa-refresh"></i> Restart</button>
+    </div>
+  </div>
+
+  <!-- Audio Elements for Retro Sounds -->
+  <audio id="eatSound" src="sounds/eat.mp3" preload="auto"></audio>
+  <audio id="gameOverSound" src="sounds/gameover.mp3" preload="auto"></audio>
+  <audio id="restartSound" src="sounds/restart.mp3" preload="auto"></audio>
+
+  <script>
+    // ===== Scroll Progress Bar =====
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      document.getElementById('progress-bar').style.width = progress + '%';
+    });
+
+    // ----- Simulate Progress Bar with Dynamic Dots -----
+    const terminal = document.getElementById('terminal');
+    let terminalFinished = false;
+    function simulateProgressBar() {
+      const progressWrapper = document.createElement('div');
+      progressWrapper.className = 'install-progress-wrapper';
+      
+      const progressTitle = document.createElement('div');
+      progressTitle.className = 'install-progress-title';
+      progressTitle.textContent = "> Retrieving info about Dave";
+      progressWrapper.appendChild(progressTitle);
+      
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'install-progress-container';
+      
+      const progressBar = document.createElement('div');
+      progressBar.className = 'install-progress-bar';
+      progressContainer.appendChild(progressBar);
+      progressWrapper.appendChild(progressContainer);
+      
+      terminal.appendChild(progressWrapper);
+      
+      let dotCount = 0;
+      const maxDots = 3;
+      const dotsInterval = setInterval(() => {
+        dotCount = (dotCount + 1) % (maxDots + 1);
+        let dots = ".".repeat(dotCount);
+        progressTitle.textContent = "> Retrieving info about Dave" + dots;
+      }, 500);
+      
+      let width = 0;
+      const progressInterval = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(progressInterval);
+          clearInterval(dotsInterval);
+          terminal.removeChild(progressWrapper);
+          type();
+        } else {
+          width++;
+          progressBar.style.width = width + '%';
+        }
+      }, 30);
+    }
+
+    // ----- Smooth Scroll for Navbar & Others -----
+    document.querySelectorAll('nav a, .scroll-link, .hero-down a, .up-arrow a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 60,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+
+    /*
+     * Typewriter Effect for Retro Terminal.
+     */
+    const lines = [
+      "> Jr. Full-Stack Web Developer @ C4 Engineering",
+      "> Building secure, scalable, and efficient web solutions",
+      "> Press S to snake game"
+    ];
+    let lineIndex = 0;
+    let charIndex = 0;
+    const typingDelay = 50;
+    const lineDelay = 500;
+
+    function type() {
+      terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
+      
+      if (lineIndex < lines.length) {
+        if (charIndex < lines[lineIndex].length) {
+          terminal.innerHTML += lines[lineIndex].charAt(charIndex);
+          charIndex++;
+          terminal.innerHTML += '<span class="cursor">_</span>';
+          setTimeout(type, typingDelay);
+        } else {
+          terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
+          terminal.innerHTML += "\n";
+          charIndex = 0;
+          lineIndex++;
+          terminal.scrollTop = terminal.scrollHeight;
+          setTimeout(type, lineDelay);
+        }
+      } else {
+        document.getElementById('resetTerminal').style.display = 'block';
+        terminalFinished = true;
+      }
+    }
+
+    // ----- On Window Load, start with the progress bar first -----
+    window.addEventListener('load', simulateProgressBar);
+
+    // ----- Reinitialize Terminal (Reset Button) -----
+    const resetBtn = document.getElementById('resetTerminal');
+    function reinitializeTerminal() {
+      terminal.innerHTML = "";
+      lineIndex = 0;
+      charIndex = 0;
+      terminalFinished = false;
+      document.getElementById('resetTerminal').style.display = 'none';
+      simulateProgressBar();
+    }
+    resetBtn.addEventListener('click', reinitializeTerminal);
+
+    // ----- Global key listener for starting the snake game -----
+    // Fixed: Check if the snake modal is not already open.
+    document.addEventListener('keydown', (e) => {
+      if (terminalFinished && e.key.toLowerCase() === 's' && document.getElementById('snakeModal').style.display !== 'block') {
+        openSnakeModal();
+      }
+    });
+
+    // ----- Expand/Collapse Logic for Details -----
+    function expandSection(element) {
+      const sectionHeight = element.scrollHeight;
+      element.style.maxHeight = sectionHeight + 'px';
+      element.style.opacity = '1';
+    }
+    function collapseSection(element) {
+      element.style.maxHeight = '0';
+      element.style.opacity = '0';
+    }
+    document.querySelectorAll('.skill-toggle').forEach((toggle, index) => {
+      const detail = document.querySelectorAll('.skill-details')[index];
+      toggle.addEventListener('click', () => {
+        if (detail.style.maxHeight && detail.style.maxHeight !== '0px') {
+          collapseSection(detail);
+          toggle.innerHTML = `Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>`;
+        } else {
+          expandSection(detail);
+          toggle.innerHTML = `Hide Details <i class="fa fa-caret-down icon-toggle icon-rotated" aria-hidden="true"></i>`;
+        }
+      });
+    });
+    document.querySelectorAll('.exp-toggle').forEach((toggle, index) => {
+      const detail = document.querySelectorAll('.exp-details')[index];
+      toggle.addEventListener('click', () => {
+        if (detail.style.maxHeight && detail.style.maxHeight !== '0px') {
+          collapseSection(detail);
+          toggle.innerHTML = `Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>`;
+        } else {
+          expandSection(detail);
+          toggle.innerHTML = `Hide Details <i class="fa fa-caret-down icon-toggle icon-rotated" aria-hidden="true"></i>`;
+        }
+      });
+    });
+
+    // ----- Hamburger Menu Toggle -----
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    // ----- Fetch and display user's location and weather -----
+    fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(data => {
+        const location = data.city + ', ' + data.region + ', ' + data.country_name;
+        return fetch('https://wttr.in/' + data.city + '?format=3')
+          .then(response => response.text())
+          .then(weather => {
+            document.getElementById('user-ip').textContent = location + ' | ' + weather;
+          });
+      })
+      .catch(err => {
+        document.getElementById('user-ip').textContent = 'Location and weather unavailable';
+      });
+
+    /* ===== Retro Snake Game Code (Fixed & Enhanced) ===== */
+    let snakeAnimationFrame;
+    let lastTime = 0;
+    let gameRunning = false; // Flag to control game loop
+    let snakeSpeed = 120; // in ms
+
+    let snake, food, direction, nextDirection, score;
+    const canvas = document.getElementById('snakeCanvas');
+    const ctx = canvas.getContext('2d');
+    const cellSize = 15;
+    const gridWidth = canvas.width / cellSize;  // 20 cells
+    const gridHeight = canvas.height / cellSize; // 20 cells
+
+    function startSnakeGame() {
+      snake = [{ x: 10, y: 10 }];
+      direction = 'right';
+      nextDirection = 'right';
+      score = 0;
+      updateScore();
+      // Hide any existing notification if visible
+      document.getElementById('notif').style.display = 'none';
+      document.getElementById('restartSnakeButton').style.display = 'none';
+      placeFood();
+      // Remove previous keydown listener before adding a new one.
+      document.removeEventListener('keydown', handleKeyDown);
+      document.addEventListener('keydown', handleKeyDown);
+      lastTime = 0;
+      gameRunning = true;
+      snakeAnimationFrame = requestAnimationFrame(gameLoop);
+    }
+
+    function gameLoop(timestamp) {
+      if (!gameRunning) return;
+      if (!lastTime) lastTime = timestamp;
+      const delta = timestamp - lastTime;
+      if (delta > snakeSpeed) {
+        updateSnakeGame();
+        lastTime = timestamp;
+      }
+      if (gameRunning) {
+        snakeAnimationFrame = requestAnimationFrame(gameLoop);
+      }
+    }
+
+    function updateSnakeGame() {
+      // Update direction if valid
+      if ((nextDirection === 'left' && direction !== 'right') ||
+          (nextDirection === 'right' && direction !== 'left') ||
+          (nextDirection === 'up' && direction !== 'down') ||
+          (nextDirection === 'down' && direction !== 'up')) {
+        direction = nextDirection;
+      }
+      const head = { x: snake[0].x, y: snake[0].y };
+      if (direction === 'right') head.x++;
+      else if (direction === 'left') head.x--;
+      else if (direction === 'up') head.y--;
+      else if (direction === 'down') head.y++;
+
+      // Check collision with walls
+      if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
+        gameOver();
+        return;
+      }
+      // Check collision with self
+      for (let segment of snake) {
+        if (segment.x === head.x && segment.y === head.y) {
+          gameOver();
+          return;
+        }
+      }
+      snake.unshift(head);
+      // Check if food is eaten
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        updateScore();
+        playSound('eatSound');
+        placeFood();
+      } else {
+        snake.pop();
+      }
+      drawSnakeGame();
+    }
+
+    function drawSnakeGame() {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Draw food
+      ctx.fillStyle = '#02d463';
+      ctx.fillRect(food.x * cellSize, food.y * cellSize, cellSize, cellSize);
+      // Draw snake
+      ctx.fillStyle = '#02d463';
+      for (let segment of snake) {
+        ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
+      }
+    }
+
+    function placeFood() {
+      food = {
+        x: Math.floor(Math.random() * gridWidth),
+        y: Math.floor(Math.random() * gridHeight)
+      };
+      for (let segment of snake) {
+        if (segment.x === food.x && segment.y === food.y) {
+          placeFood();
+          return;
+        }
+      }
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      cancelAnimationFrame(snakeAnimationFrame);
+      playSound('gameOverSound');
+      // Instead of moving gameMessage, show notif overlay
+      document.getElementById('notif').innerHTML = 'GAME OVER <span class="close-notif" id="closeNotif">X</span>';
+      document.getElementById('notif').style.display = 'block';
+      document.getElementById('restartSnakeButton').style.display = 'block';
+      // Add listener for closing notification
+      document.getElementById('closeNotif').addEventListener('click', () => {
+        document.getElementById('notif').style.display = 'none';
+      });
+    }
+
+    function updateScore() {
+      document.getElementById('scoreDisplay').innerText = "Score: " + score;
+    }
+
+    function handleKeyDown(e) {
+      const key = e.key.toLowerCase();
+      if (key === 'w' || key === 'arrowup') nextDirection = 'up';
+      else if (key === 'a' || key === 'arrowleft') nextDirection = 'left';
+      else if (key === 's' || key === 'arrowdown') nextDirection = 'down';
+      else if (key === 'd' || key === 'arrowright') nextDirection = 'right';
+    }
+
+    function openSnakeModal() {
+      document.getElementById('snakeModal').style.display = 'block';
+      // Disable scrolling on the body when modal is open.
+      document.body.style.overflow = 'hidden';
+      startSnakeGame();
+    }
+
+    function closeSnakeModal() {
+      document.getElementById('snakeModal').style.display = 'none';
+      cancelAnimationFrame(snakeAnimationFrame);
+      document.removeEventListener('keydown', handleKeyDown);
+      // Re-enable scrolling on the body.
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('restartSnakeButton').addEventListener('click', () => {
+      playSound('restartSound');
+      cancelAnimationFrame(snakeAnimationFrame);
+      startSnakeGame();
+    });
+
+    document.getElementById('closeSnakeModal').addEventListener('click', closeSnakeModal);
+
+    document.querySelectorAll('#snakeModal .mobile-controls button').forEach(button => {
+      button.addEventListener('click', () => {
+        const dir = button.getAttribute('data-dir');
+        nextDirection = dir;
+      });
+    });
+
+    // Touch support for swipe gestures on the canvas
+    let touchStartX = null;
+    let touchStartY = null;
+    canvas.addEventListener('touchstart', function(e) {
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, false);
+    canvas.addEventListener('touchmove', function(e) {
+      if (!touchStartX || !touchStartY) return;
+      const touch = e.touches[0];
+      let diffX = touch.clientX - touchStartX;
+      let diffY = touch.clientY - touchStartY;
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) nextDirection = 'right';
+        else nextDirection = 'left';
+      } else {
+        if (diffY > 0) nextDirection = 'down';
+        else nextDirection = 'up';
+      }
+      // Reset start values after a swipe
+      touchStartX = null;
+      touchStartY = null;
+      e.preventDefault();
+    }, false);
+
+    function playSound(id) {
+      const sound = document.getElementById(id);
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play();
+      }
+    }
+  </script>
+</body>
+</html>
