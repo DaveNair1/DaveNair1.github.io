@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DAVE NAIR - Web Dev Portfolio</title>
 
-  <!-- Font Awesome (v4.7) for icons -->
   <link 
     rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -31,7 +30,7 @@
       background: #02d463;
     }
 
-    /* ---------- Retro Computer Terminal (Fixed Size on Desktop, Dynamic on Mobile) ---------- */
+    /* ---------- Computer Terminal ---------- */
     .retro-screen {
       width: 800px;
       height: 400px;
@@ -63,7 +62,6 @@
         filter: brightness(1);
       }
     }
-    /* Scanlines effect */
     .retro-screen::after {
       content: "";
       position: absolute;
@@ -81,7 +79,6 @@
       pointer-events: none;
     }
 
-    /* ---------- Terminal Header with Updated Window Controls ---------- */
     .terminal-header {
       position: absolute;
       top: 0;
@@ -125,7 +122,7 @@
       color: #fff;
     }
 
-    /* ---------- Dotted Heading (“DAVE NAIR”) with Gradual Reveal ---------- */
+    /* ---------- Dotted Heading for NAme ---------- */
     .dotted-heading {
       margin-top: 40px;
       text-align: left;
@@ -144,7 +141,7 @@
       height: auto;
     }
 
-    /* ---------- Terminal text container (Retro Terminal Look) ---------- */
+    /* ---------- Terminal text container ---------- */
     #terminal {
       margin-top: 10px;
       padding: 0 10px;
@@ -220,7 +217,7 @@
     #resetTerminal:hover {
       opacity: 0.8;
     }
-    /* ---------- Launch Button (Inline in Terminal) ---------- */
+    /* ---------- Launch Button ---------- */
     #launchGame {
       background: #02d463;
       border: none;
@@ -235,9 +232,7 @@
     #launchGame:hover {
       opacity: 0.8;
     }
-    /* Note: The Play Snake button has been removed in favor of "Press S to play game" */
 
-    /* ---------- Icon Rotation for Toggle Arrows ---------- */
     .icon-toggle {
       transition: transform 0.4s ease;
     }
@@ -301,7 +296,7 @@
       color: #f1f1f1;
     }
 
-    /* ---------- HERO SECTION ---------- */
+    /* ---------- HERO  ---------- */
     .hero {
       width: 100%;
       height: 100vh;
@@ -325,7 +320,7 @@
       color: #02d463;
     }
 
-    /* ---------- SECTION WRAPPER ---------- */
+    /* ---------- WRAPPER ---------- */
     .section {
       width: 90%;
       max-width: 1100px;
@@ -339,7 +334,7 @@
       position: relative;
     }
 
-    /* ---------- KEY SKILLS (Grid) ---------- */
+    /* ---------- KEY SKILLS ---------- */
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -411,7 +406,7 @@
       color: #121212;
     }
 
-    /* ---------- EXPERIENCE (Grid) ---------- */
+    /* ---------- EXPERIENCE Grid ---------- */
     .experience-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -523,7 +518,7 @@
       color: #ccc;
     }
 
-    /* ---------- CONTACT SECTION ---------- */
+    /* ---------- CONTACT ---------- */
     .contact-container {
       display: flex;
       flex-direction: column;
@@ -570,7 +565,7 @@
       text-decoration: none;
     }
 
-    /* ---------- UP ARROW (above footer) ---------- */
+    /* ---------- UP ARROW ---------- */
     .up-arrow {
       text-align: center;
       margin: 2rem 0;
@@ -595,7 +590,7 @@
       margin-top: 1rem;
     }
 
-    /* ---------- MEDIA QUERIES (Responsive Adjustments) ---------- */
+    /* ---------- MEDIA QUERIES ---------- */
     @media (max-width: 800px) {
       .retro-screen {
         width: 95%;
@@ -633,7 +628,6 @@
         width: 90%;
         height: 40vh;
       }
-      /* Fixed terminal height on mobile so it does not grow dynamically */
       #terminal {
         height: calc(40vh - 50px) !important;
         max-height: calc(40vh - 50px) !important;
@@ -648,11 +642,11 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000; /* Fully opaque background */
+      background: #000; 
       z-index: 11000;
       color: #02d463;
       font-family: 'Courier New', monospace;
-      overflow: hidden; /* Prevent any scrolling within the modal */
+      overflow: hidden; 
     }
     #snakeModal .modal-header {
       display: flex;
@@ -665,7 +659,6 @@
       margin: 0;
       font-size: 1.2rem;
     }
-    /* Enhanced Close Button */
     #snakeModal .modal-header .close-modal {
       cursor: pointer;
       font-size: 1.5rem;
@@ -679,7 +672,6 @@
     #snakeModal .modal-header .close-modal:hover {
       background: #c0392b;
     }
-    /* Make modal-content position relative so absolute children are positioned accordingly */
     #snakeModal .modal-content {
       position: relative;
       display: flex;
@@ -688,7 +680,6 @@
       justify-content: center;
       height: calc(100% - 40px);
     }
-    /* Notification (error) styling – appears on top of scoreDisplay without moving layout */
     #notif {
       position: absolute;
       top: 10px;
@@ -707,12 +698,10 @@
       cursor: pointer;
       font-weight: bold;
     }
-    /* Score, game message, and restart button */
     #scoreDisplay {
       font-size: 1.2rem;
       margin-bottom: 10px;
     }
-    /* (We now use #notif instead of #gameMessage for errors.) */
     #snakeModal canvas {
       border: 2px solid #02d463;
       background: #000;
@@ -726,7 +715,6 @@
       display: flex;
       gap: 10px;
     }
-    /* Mobile control buttons now show arrow symbols */
     #snakeModal .mobile-controls button {
       background: #02d463;
       color: #121212;
@@ -736,7 +724,6 @@
       font-size: 1.2rem;
       cursor: pointer;
     }
-    /* Restart button with refresh icon */
     #restartSnakeButton {
       display: none;
       margin-top: 10px;
@@ -795,7 +782,7 @@
           </ul>
         </div>
       </div>
-      <!-- Dotted Heading (Gradually Revealed) -->
+      <!-- Heading  -->
       <div class="dotted-heading">
         <svg viewBox="0 0 600 100" preserveAspectRatio="xMinYMin meet">
           <text x="0" y="70" 
@@ -810,14 +797,13 @@
           </text>
         </svg>
       </div>
-      <!-- Terminal Content: The progress bar will appear here, then the typewriter text -->
+
       <div id="terminal"></div>
       <br>
-      <!-- Reboot Terminal Button (hidden until typing complete) -->
+      <!-- Reboot Terminal Button-->
       <button id="resetTerminal">Reboot Terminal</button>
-      <!-- (The Play Snake button has been removed in favor of "Press S to play game" & the new inline LAUNCH GAME button) -->
     </div>
-    <!-- Down arrow button to scroll to About -->
+    <!-- Down arr button to scroll to About -->
     <div class="hero-down" style="text-align: center; margin-top: 20px;">
       <a href="#about" style="color: #02d463; font-size: 24px;">
         <br>
@@ -928,7 +914,7 @@
       <!-- Card 1 -->
       <div class="exp-card">
         <img 
-          src="/DaveNair1.github.io/static/images/software-developer-6521720_1280.jpg" 
+          src="/static/images/software-developer-6521720_1280.jpg" 
           alt="Junior Web Developer Image" 
           class="exp-image"
         />
@@ -963,7 +949,7 @@
       <!-- Card 2 -->
       <div class="exp-card">
         <img 
-          src="/DaveNair1.github.io/static/images/programming-1873854_1280.png" 
+          src="/static/images/programming-1873854_1280.png" 
           alt="Intern Developer Image" 
           class="exp-image"
         />
@@ -999,8 +985,8 @@
   <section id="resume" class="section">
     <h2 class="section-title"><code>Download Resume</code></h2>
     <div class="resume-download" style="text-align: center;">
-      <a href="/DaveNair1.github.io/static/docs/Dave Nair BDO Graduate Program - Cyber Resume.pdf" download>
-        <img src="/DaveNair1.github.io/static/images/file-arrow-down-solid.svg" alt="Download Resume" style="width: 4rem; height: 4rem;">
+      <a href="/static/docs/Dave Nair BDO Graduate Program - Cyber Resume.pdf" download>
+        <img src="/static/images/file-arrow-down-solid.svg" alt="Download Resume" style="width: 4rem; height: 4rem;">
       </a>
     </div>
   </section>
@@ -1044,11 +1030,10 @@
       <span class="close-modal" id="closeSnakeModal">X</span>
     </div>
     <div class="modal-content">
-      <!-- Notification area: absolutely positioned so it overlays the score display without moving layout -->
+
       <div id="notif"></div>
       <div id="scoreDisplay">Score: 0</div>
       <canvas id="snakeCanvas" width="300" height="300"></canvas>
-      <!-- (gameMessage element is no longer used for errors) -->
       <div class="instructions" style="text-align: center;">Use WASD or Arrow keys to control the snake. On mobile, swipe or use the buttons below.</div>
       <div class="mobile-controls">
         <button data-dir="up">↑</button>
@@ -1060,13 +1045,13 @@
     </div>
   </div>
 
-  <!-- Audio Elements for Retro Sounds -->
+  <!-- Audio Elements 4 Sounds -->
   <audio id="eatSound" src="sounds/eat.mp3" preload="auto"></audio>
   <audio id="gameOverSound" src="sounds/gameover.mp3" preload="auto"></audio>
   <audio id="restartSound" src="sounds/restart.mp3" preload="auto"></audio>
 
   <script>
-    // ===== Scroll Progress Bar =====
+    // Scroll Progress Bar 
     window.addEventListener('scroll', () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -1074,7 +1059,7 @@
       document.getElementById('progress-bar').style.width = progress + '%';
     });
 
-    // ----- Simulate Progress Bar with Dynamic Dots -----
+    // Progress Bar with Dots 
     const terminal = document.getElementById('terminal');
     let terminalFinished = false;
     function simulateProgressBar() {
@@ -1118,7 +1103,6 @@
       }, 30);
     }
 
-    // ----- Smooth Scroll for Navbar & Others -----
     document.querySelectorAll('nav a, .scroll-link, .hero-down a, .up-arrow a').forEach(link => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
@@ -1135,11 +1119,7 @@
       });
     });
 
-    /*
-     * Typewriter Effect for Retro Terminal.
-     * Note: The third line now ends with a space so that after it is typed,
-     * a launch button labeled "LAUNCH GAME" is appended inline.
-     */
+    /* Typewriter Effect */
     const lines = [
       "> Jr. Web Developer @ C4 Engineering",
       "> Building secure, scalable, and efficient web solutions",
@@ -1175,7 +1155,7 @@
       } else {
         document.getElementById('resetTerminal').style.display = 'block';
         terminalFinished = true;
-        // Attach click event to the launch button if it exists
+        
         const launchButton = document.getElementById('launchGame');
         if (launchButton) {
           launchButton.addEventListener('click', openSnakeModal);
@@ -1183,10 +1163,9 @@
       }
     }
 
-    // ----- On Window Load, start with the progress bar first -----
     window.addEventListener('load', simulateProgressBar);
 
-    // ----- Reinitialize Terminal (Reset Button) -----
+    // Reset 
     const resetBtn = document.getElementById('resetTerminal');
     function reinitializeTerminal() {
       terminal.innerHTML = "";
@@ -1263,7 +1242,7 @@
         document.getElementById('user-ip').textContent = 'Location and weather unavailable';
       });
 
-    /* ===== Retro Snake Game Code (Fixed & Enhanced) ===== */
+    /* ===== Snake Game Code ===== */
     let snakeAnimationFrame;
     let lastTime = 0;
     let gameRunning = false; // Flag to control game loop
@@ -1282,7 +1261,7 @@
       nextDirection = 'right';
       score = 0;
       updateScore();
-      // Hide any existing notification if visible
+
       document.getElementById('notif').style.display = 'none';
       document.getElementById('restartSnakeButton').style.display = 'none';
       placeFood();
@@ -1376,7 +1355,6 @@
       gameRunning = false;
       cancelAnimationFrame(snakeAnimationFrame);
       playSound('gameOverSound');
-      // Instead of moving gameMessage, show notif overlay
       document.getElementById('notif').innerHTML = 'GAME OVER <span class="close-notif" id="closeNotif">X</span>';
       document.getElementById('notif').style.display = 'block';
       document.getElementById('restartSnakeButton').style.display = 'block';
@@ -1400,7 +1378,7 @@
 
     function openSnakeModal() {
       document.getElementById('snakeModal').style.display = 'block';
-      // Disable scrolling on the body when modal is open.
+      
       document.body.style.overflow = 'hidden';
       startSnakeGame();
     }
@@ -1409,7 +1387,6 @@
       document.getElementById('snakeModal').style.display = 'none';
       cancelAnimationFrame(snakeAnimationFrame);
       document.removeEventListener('keydown', handleKeyDown);
-      // Re-enable scrolling on the body.
       document.body.style.overflow = '';
     }
 
