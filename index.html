@@ -220,6 +220,21 @@
     #resetTerminal:hover {
       opacity: 0.8;
     }
+    /* ---------- Launch Button (Inline in Terminal) ---------- */
+    #launchGame {
+      background: #02d463;
+      border: none;
+      color: #121212;
+      padding: 4px 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline;
+      margin-left: 5px;
+    }
+    #launchGame:hover {
+      opacity: 0.8;
+    }
     /* Note: The Play Snake button has been removed in favor of "Press S to play game" */
 
     /* ---------- Icon Rotation for Toggle Arrows ---------- */
@@ -618,6 +633,11 @@
         width: 90%;
         height: 40vh;
       }
+      /* Fixed terminal height on mobile so it does not grow dynamically */
+      #terminal {
+        height: calc(40vh - 50px) !important;
+        max-height: calc(40vh - 50px) !important;
+      }
     }
 
     /* ---------- Snake Modal Styles ---------- */
@@ -699,6 +719,7 @@
     }
     #snakeModal .instructions {
       margin-top: 10px;
+      text-align: center;
     }
     #snakeModal .mobile-controls {
       margin-top: 10px;
@@ -791,9 +812,10 @@
       </div>
       <!-- Terminal Content: The progress bar will appear here, then the typewriter text -->
       <div id="terminal"></div>
+      <br>
       <!-- Reboot Terminal Button (hidden until typing complete) -->
       <button id="resetTerminal">Reboot Terminal</button>
-      <!-- (The Play Snake button has been removed in favor of "Press S to play game") -->
+      <!-- (The Play Snake button has been removed in favor of "Press S to play game" & the new inline LAUNCH GAME button) -->
     </div>
     <!-- Down arrow button to scroll to About -->
     <div class="hero-down" style="text-align: center; margin-top: 20px;">
@@ -809,13 +831,13 @@
     <h2 class="section-title"><code>About Me</code></h2>
     <div class="about-wrapper">
       <img 
-        src="/static/images/1709232116646.jpeg" 
+        src="/DaveNair1.github.io/static/images/1709232116646.jpeg" 
         alt="Dave Nair Portrait" 
         class="about-image"
       />
       <div class="about-content" id="aboutContent">
         <p>
-          Hello! I am <strong>Dave Nair</strong>, a web developer based in <strong>Melbourne</strong> who loves creating user-friendly websites and intuitive UI/UX designs. I focus on simplicity and attention to detail to build engaging interfaces.
+          Hello! I am <strong>Dave Nair</strong>, a Full-Statck Web Developer based in <strong>Melbourne</strong> who loves creating user-friendly websites and intuitive UI/UX designs. I focus on simplicity and attention to detail to build engaging interfaces.
         </p>
         <br/>
         <p>
@@ -906,7 +928,7 @@
       <!-- Card 1 -->
       <div class="exp-card">
         <img 
-          src="/static/images/software-developer-6521720_1280.jpg" 
+          src="/DaveNair1.github.io/static/images/software-developer-6521720_1280.jpg" 
           alt="Junior Web Developer Image" 
           class="exp-image"
         />
@@ -941,7 +963,7 @@
       <!-- Card 2 -->
       <div class="exp-card">
         <img 
-          src="/static/images/programming-1873854_1280.png" 
+          src="/DaveNair1.github.io/static/images/programming-1873854_1280.png" 
           alt="Intern Developer Image" 
           class="exp-image"
         />
@@ -977,8 +999,8 @@
   <section id="resume" class="section">
     <h2 class="section-title"><code>Download Resume</code></h2>
     <div class="resume-download" style="text-align: center;">
-      <a href="/static/docs/Dave Nair Resume.pdf" download>
-        <img src="/static/images/file-arrow-down-solid.svg" alt="Download Resume" style="width: 4rem; height: 4rem;">
+      <a href="/DaveNair1.github.io/static/docs/Dave Nair BDO Graduate Program - Cyber Resume.pdf" download>
+        <img src="/DaveNair1.github.io/static/images/file-arrow-down-solid.svg" alt="Download Resume" style="width: 4rem; height: 4rem;">
       </a>
     </div>
   </section>
@@ -1022,12 +1044,12 @@
       <span class="close-modal" id="closeSnakeModal">X</span>
     </div>
     <div class="modal-content">
-      <!-- Notification area: absolutely positioned so it overlays the score display -->
+      <!-- Notification area: absolutely positioned so it overlays the score display without moving layout -->
       <div id="notif"></div>
       <div id="scoreDisplay">Score: 0</div>
       <canvas id="snakeCanvas" width="300" height="300"></canvas>
       <!-- (gameMessage element is no longer used for errors) -->
-      <div class="instructions">Use WASD or Arrow keys to control the snake. On mobile, swipe or use the buttons below.</div>
+      <div class="instructions" style="text-align: center;">Use WASD or Arrow keys to control the snake. On mobile, swipe or use the buttons below.</div>
       <div class="mobile-controls">
         <button data-dir="up">↑</button>
         <button data-dir="left">←</button>
@@ -1061,7 +1083,7 @@
       
       const progressTitle = document.createElement('div');
       progressTitle.className = 'install-progress-title';
-      progressTitle.textContent = "> Retrieving info about Dave";
+      progressTitle.textContent = "> Retrieving info";
       progressWrapper.appendChild(progressTitle);
       
       const progressContainer = document.createElement('div');
@@ -1079,7 +1101,7 @@
       const dotsInterval = setInterval(() => {
         dotCount = (dotCount + 1) % (maxDots + 1);
         let dots = ".".repeat(dotCount);
-        progressTitle.textContent = "> Retrieving info about Dave" + dots;
+        progressTitle.textContent = "> Retrieving info" + dots;
       }, 500);
       
       let width = 0;
@@ -1115,11 +1137,13 @@
 
     /*
      * Typewriter Effect for Retro Terminal.
+     * Note: The third line now ends with a space so that after it is typed,
+     * a launch button labeled "LAUNCH GAME" is appended inline.
      */
     const lines = [
-      "> Jr. Full-Stack Web Developer @ C4 Engineering",
+      "> Jr. Web Developer @ C4 Engineering",
       "> Building secure, scalable, and efficient web solutions",
-      "> Press S to play snake game"
+      "> Press S to play snake game or press "
     ];
     let lineIndex = 0;
     let charIndex = 0;
@@ -1137,7 +1161,12 @@
           setTimeout(type, typingDelay);
         } else {
           terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
-          terminal.innerHTML += "\n";
+          if (lineIndex === lines.length - 1) {
+            // Append the launch button inline
+            terminal.innerHTML += '<button id="launchGame">LAUNCH GAME</button>\n';
+          } else {
+            terminal.innerHTML += "\n";
+          }
           charIndex = 0;
           lineIndex++;
           terminal.scrollTop = terminal.scrollHeight;
@@ -1146,6 +1175,11 @@
       } else {
         document.getElementById('resetTerminal').style.display = 'block';
         terminalFinished = true;
+        // Attach click event to the launch button if it exists
+        const launchButton = document.getElementById('launchGame');
+        if (launchButton) {
+          launchButton.addEventListener('click', openSnakeModal);
+        }
       }
     }
 
