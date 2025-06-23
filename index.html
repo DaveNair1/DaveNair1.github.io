@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DAVE NAIR - Web Dev Portfolio</title>
+  
+  <!-- Favicon - Multiple sizes for better browser compatibility -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+  <link rel="shortcut icon" href="/DaveNair1.github.io/static/images/DN_Logo.png">
 
   <!-- Font Awesome (v4.7) for icons -->
   <link 
@@ -658,6 +664,19 @@
       color: var(--terminal-green-light);
       text-shadow: 0 0 5px var(--retro-shadow);
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      filter: drop-shadow(0 0 5px var(--retro-shadow));
+      transition: all 0.3s ease;
+    }
+    .nav-brand img:hover {
+      transform: scale(1.05);
     }
     .nav-right {
       display: flex;
@@ -1521,6 +1540,10 @@
         bottom: 10px;
         right: 10px;
       }
+      .nav-brand img {
+        width: 28px;
+        height: 28px;
+      }
     }
     @media (max-width: 768px) {
       .nav-right {
@@ -1643,6 +1666,14 @@
         width: 70px;
         height: 70px;
       }
+      .nav-brand img {
+        width: 24px;
+        height: 24px;
+      }
+      .nav-brand {
+        font-size: 1.2rem;
+        gap: 8px;
+      }
     }
 
     /* ---------- Retro Particles ---------- */
@@ -1694,7 +1725,11 @@
 
   <!-- Enhanced Navbar with Theme Toggle -->
   <nav>
-    <div class="nav-brand"><a href="#hero"><code>DAVE NAIR</code></a></div>
+    <div class="nav-brand">
+      <a href="#hero" style="display: flex; align-items: center; gap: 12px;">
+        <img src="/DaveNair1.github.io/static/images/DN_Logo.png" alt="DN Logo" id="navLogo">
+      </a>
+    </div>
     <div class="nav-right">
       <ul class="nav-links">
         <li><a href="#hero">Home</a></li>
@@ -1751,7 +1786,7 @@
       <div id="terminal"></div>
       <br>
       <!-- Retro Reboot Terminal Button -->
-      <button id="resetTerminal">Reboot Terminal</button>
+      <button id="resetTerminal">Reboot ↻</button>
     </div>
     <!-- Retro Down Arrow -->
     <div class="hero-down">
@@ -1766,7 +1801,7 @@
   <section id="about" class="section fade-in">
     <h2 class="section-title"><code>About Me</code></h2>
     <div class="about-wrapper">
-      <img src="/static/images/Screenshot 2025-06-23 at 16.49.15.png" alt="Dave Nair Portrait" class="about-image" />
+      <img src="/DaveNair1.github.io/static/images/Screenshot 2025-06-23 at 16.49.15.png" alt="Dave Nair Portrait" class="about-image" />
       <div class="about-content" id="aboutContent">
         <p>
           Hello! I am <strong>Dave Nair</strong>, a Full-Stack Web Developer and Sessional Academic based in <strong>Melbourne</strong> who loves creating user-friendly websites, intuitive UI/UX designs, and providing comprehensive technical support for educational technology systems.
@@ -1792,7 +1827,7 @@
           Expert in Django, Python, PostgreSQL for robust backend systems. Proficient in HTML5, CSS3, JavaScript, Alpine.js, HTMX, and Tailwind CSS for modern frontend experiences.
         </p>
         <span class="skill-toggle">
-          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
@@ -1814,7 +1849,7 @@
           Implement OWASP ASVS security standards, GDPR compliance, Docker containerization, and collaborative workflows using Git, Jira, and Confluence for enterprise-level projects.
         </p>
         <span class="skill-toggle">
-          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
@@ -1836,7 +1871,7 @@
           Provide comprehensive technical support for educational technology, live-streaming systems, and hybrid learning environments while training stakeholders on best practices.
         </p>
         <span class="skill-toggle">
-          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
@@ -1856,7 +1891,7 @@
           Skilled in stakeholder needs analysis, use case development, system modeling, and requirements documentation for digital business transformation projects.
         </p>
         <span class="skill-toggle">
-          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
@@ -1876,7 +1911,7 @@
           Experienced in strategic ambidexterity, institutional theory application, international business risk assessment, and AI integration for competitive advantage and operational excellence.
         </p>
         <span class="skill-toggle">
-          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
@@ -1898,14 +1933,14 @@
       
       <!-- New Experience Card 1: Sessional Academic -->
       <div class="exp-card">
-        <img src="/static/images/rashid-tajuar-g0nVEyiDBAI-unsplash.jpg" alt="Deakin University Academic Role" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/rashid-tajuar-g0nVEyiDBAI-unsplash.jpg" alt="Deakin University Academic Role" class="exp-image" />
         <div class="exp-content">
           <h3>Sessional Academic - Deakin University</h3>
           <p>
             Primary technical support contact for hybrid live-streaming educational technology, assisting teaching staff and students while facilitating stakeholder communication and driving continuous improvement initiatives.
           </p>
           <span class="exp-toggle">
-            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+            Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
           </span>
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
@@ -1929,14 +1964,14 @@
 
       <!-- Experience Card 2: Junior Web Developer -->
       <div class="exp-card">
-        <img src="/static/images/software-developer-6521720_1280.jpg" alt="Junior Web Developer Image" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/software-developer-6521720_1280.jpg" alt="Junior Web Developer Image" class="exp-image" />
         <div class="exp-content">
           <h3>Junior Web Developer - C4 Engineering</h3>
           <p>
             Currently spearheading secure, scalable web apps with Django, HTML/HTMX, Tailwind CSS, Alpine.js, and Docker at C4 Engineering. Collaborate cross functionally using Agile, ITIL, and OWASP best practices.
           </p>
           <span class="exp-toggle">
-            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+            Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
           </span>
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
@@ -1958,14 +1993,14 @@
 
       <!-- Experience Card 3: Frontend Developer Intern -->
       <div class="exp-card">
-        <img src="/static/images/programming-1873854_1280.png" alt="Intern Developer Image" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/programming-1873854_1280.png" alt="Intern Developer Image" class="exp-image" />
         <div class="exp-content">
           <h3>Frontend Developer Intern - C4 Engineering</h3>
           <p>
             Contributed to UI/UX enhancements at C4 Engineering by developing a robust design system and landing page that boosted user engagement by 25% and development efficiency by 20%.
           </p>
           <span class="exp-toggle">
-            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+            Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
           </span>
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
@@ -1987,14 +2022,14 @@
       
       <!-- Experience Card 4: MOP-Code Project -->
       <div class="exp-card">
-        <img src="/static/images/melbourne-5076478_1280.jpg" alt="MOP-Code Project Image" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/melbourne-5076478_1280.jpg" alt="MOP-Code Project Image" class="exp-image" />
         <div class="exp-content">
           <h3>Frontend Developer - Chameleon MOP</h3>
           <p>
             Contributed to the Melbourne Open Data (MOP) project at Deakin University in collaboration with Chameleon Company, implementing advanced frontend features with React, TypeScript, and TailwindCSS.
           </p>
           <span class="exp-toggle">
-            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+            Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
           </span>
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
@@ -2020,8 +2055,8 @@
   <section id="resume" class="section fade-in">
     <h2 class="section-title"><code>Download Resume</code></h2>
     <div class="resume-download">
-      <a href="/static/docs/Dave Nair Portfolio Resume.pdf" download>
-        <img src="/static/images/file-arrow-down-solid.svg" alt="Download Resume">
+      <a href="/DaveNair1.github.io/static/docs/Dave Nair Portfolio Resume.pdf" download>
+        <img src="/DaveNair1.github.io/static/images/file-arrow-down-solid.svg" alt="Download Resume">
       </a>
     </div>
   </section>
@@ -2152,21 +2187,21 @@
   <!-- Audio Elements -->
   <!-- Main page music -->
   <audio id="synthwaveAudio" loop preload="auto">
-    <source src="/static/audio/retro-synthwave-background-soundtrack-341853.mp3" type="audio/mpeg">
+    <source src="/DaveNair1.github.io/static/audio/retro-synthwave-background-soundtrack-341853.mp3" type="audio/mpeg">
   </audio>
   <audio id="lofiAudio" loop preload="auto">
-    <source src="/static/audio/lofi-lofi-song-345371.mp3" type="audio/mpeg">
+    <source src="/DaveNair1.github.io/static/audio/lofi-lofi-song-345371.mp3" type="audio/mpeg">
   </audio>
   
   <!-- Snake game audio -->
   <audio id="snakeGameAudio" loop preload="auto">
-    <source src="/static/audio/retro-game-arcade-236133.mp3" type="audio/mpeg">
+    <source src="/DaveNair1.github.io/static/audio/retro-game-arcade-236133.mp3" type="audio/mpeg">
   </audio>
   <audio id="eatSound" preload="auto">
-    <source src="/static/audio/point-smooth-beep-230573.mp3" type="audio/mpeg">
+    <source src="/DaveNair1.github.io/static/audio/point-smooth-beep-230573.mp3" type="audio/mpeg">
   </audio>
   <audio id="gameOverSound" preload="auto">
-    <source src="/static/audio/game-over-arcade-6435.mp3" type="audio/mpeg">
+    <source src="/DaveNair1.github.io/static/audio/game-over-arcade-6435.mp3" type="audio/mpeg">
   </audio>
 
   <script>
@@ -2487,12 +2522,8 @@
           console.log('Game over sound play failed:', err);
         });
         
-        // Restart game music after game over sound ends
-        gameOverSound.addEventListener('ended', () => {
-          setTimeout(() => {
-            startSnakeAudio();
-          }, 1000);
-        }, { once: true });
+        // FIXED: Don't restart game music after game over
+        // The music should only play during active gameplay
       }
     }
 
@@ -2571,7 +2602,7 @@
         } else {
           terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
           if (lineIndex === lines.length - 1) {
-            terminal.innerHTML += '<button id="launchGame">LAUNCH GAME</button>\n';
+            terminal.innerHTML += '<button id="launchGame">LAUNCH</button>\n';
           } else {
             terminal.innerHTML += "\n";
           }
@@ -2718,10 +2749,10 @@
       toggle.addEventListener('click', () => {
         if (detail.style.maxHeight && detail.style.maxHeight !== '0px') {
           collapseSection(detail);
-          toggle.innerHTML = `Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>`;
+          toggle.innerHTML = `Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>`;
         } else {
           expandSection(detail);
-          toggle.innerHTML = `Hide Details <i class="fa fa-caret-down icon-toggle icon-rotated" aria-hidden="true"></i>`;
+          toggle.innerHTML = `Hide <i class="fa fa-caret-down icon-toggle icon-rotated" aria-hidden="true"></i>`;
         }
       });
     });
@@ -2731,10 +2762,10 @@
       toggle.addEventListener('click', () => {
         if (detail.style.maxHeight && detail.style.maxHeight !== '0px') {
           collapseSection(detail);
-          toggle.innerHTML = `Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>`;
+          toggle.innerHTML = `Expand <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>`;
         } else {
           expandSection(detail);
-          toggle.innerHTML = `Hide Details <i class="fa fa-caret-down icon-toggle icon-rotated" aria-hidden="true"></i>`;
+          toggle.innerHTML = `Hide <i class="fa fa-caret-down icon-toggle icon-rotated" aria-hidden="true"></i>`;
         }
       });
     });
