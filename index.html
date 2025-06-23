@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DAVE NAIR - Web Dev Portfolio</title>
 
+  <!-- Font Awesome (v4.7) for icons -->
   <link 
     rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -13,48 +14,353 @@
     referrerpolicy="no-referrer"
   />
 
+  <!-- Three.js and GLTFLoader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+
   <style>
-    /* ---------- Scroll Progress Bar ---------- */
+    /* ---------- Retro Color Palette ---------- */
+    :root {
+      --terminal-green: #00ff41;
+      --terminal-amber: #ffb000;
+      --terminal-white: #c0c0c0;
+      --crt-black: #0a0a0a;
+      --crt-dark: #1a1a1a;
+      --retro-shadow: rgba(0, 255, 65, 0.3);
+      --amber-shadow: rgba(255, 176, 0, 0.3);
+    }
+
+    /* Dark/Light Mode Variables */
+    [data-theme="light"] {
+      --bg-primary: #f8f9fa;
+      --bg-secondary: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #495057;
+      --border-color: #dee2e6;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --terminal-bg: #f8f9fa;
+      --terminal-border: #6c757d;
+      --terminal-text: #212529;
+      --terminal-green-light: #198754;
+      --terminal-amber-light: #fd7e14;
+      --progress-bg: #e9ecef;
+      --scrollbar-bg: #f8f9fa;
+      --scrollbar-thumb: #6c757d;
+      --section-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --text-primary: #e9ecef;
+      --text-secondary: #adb5bd;
+      --border-color: #333333;
+      --card-bg: rgba(26, 26, 26, 0.8);
+      --terminal-bg: #0a0a0a;
+      --terminal-border: #333333;
+      --terminal-text: #00ff41;
+      --terminal-green-light: #00ff41;
+      --terminal-amber-light: #ffb000;
+      --progress-bg: #333333;
+      --scrollbar-bg: #0a0a0a;
+      --scrollbar-thumb: #00ff41;
+      --section-bg: rgba(26, 26, 26, 0.6);
+    }
+
+    /* ---------- Retro Scroll Progress Bar ---------- */
     #progress-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 4px;
-      background: #121212;
+      height: 3px;
+      background: var(--crt-black);
       z-index: 10000;
+      border-bottom: 1px solid var(--terminal-green);
     }
     #progress-bar {
       height: 100%;
       width: 0%;
-      background: #02d463;
+      background: var(--terminal-green);
+      box-shadow: 0 0 10px var(--retro-shadow);
+      transition: width 0.1s ease;
     }
 
-    /* ---------- Computer Terminal ---------- */
+    /* ---------- Retro Music Controller ---------- */
+    .music-controller {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--card-bg);
+      border: 2px solid var(--terminal-green-light);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 20px var(--retro-shadow);
+      backdrop-filter: blur(10px);
+      z-index: 9998;
+      width: 280px;
+      font-family: 'Courier New', monospace;
+      transition: all 0.3s ease;
+      transform: translateY(100%);
+      opacity: 0;
+    }
+
+    .music-controller.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .music-controller.minimized {
+      width: 80px;
+      height: 80px;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .music-controller.minimized .music-content {
+      display: none;
+    }
+
+    .music-controller.minimized .music-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-size: 2rem;
+      color: var(--terminal-green-light);
+      animation: musicPulse 2s ease-in-out infinite;
+    }
+
+    .music-controller:not(.minimized) .music-icon {
+      display: none;
+    }
+
+    @keyframes musicPulse {
+      0%, 100% { 
+        transform: scale(1);
+        text-shadow: 0 0 10px var(--retro-shadow);
+      }
+      50% { 
+        transform: scale(1.1);
+        text-shadow: 0 0 20px var(--retro-shadow);
+      }
+    }
+
+    .music-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      color: var(--terminal-green-light);
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .music-minimize {
+      cursor: pointer;
+      color: var(--terminal-green-light);
+      font-size: 0.8rem;
+      padding: 2px 6px;
+      border: 1px solid var(--terminal-green-light);
+      border-radius: 3px;
+      transition: all 0.2s ease;
+    }
+
+    .music-minimize:hover {
+      background: var(--terminal-green-light);
+      color: var(--bg-primary);
+    }
+
+    .track-info {
+      text-align: center;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      font-size: 0.75rem;
+    }
+
+    .track-title {
+      color: var(--terminal-green-light);
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .visualizer {
+      height: 40px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 2px;
+      margin-bottom: 12px;
+      background: var(--progress-bg);
+      border-radius: 4px;
+      padding: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .bar {
+      width: 3px;
+      background: var(--terminal-green-light);
+      border-radius: 1px;
+      transition: height 0.1s ease;
+      min-height: 2px;
+    }
+
+    .music-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .control-btn {
+      background: none;
+      border: 2px solid var(--terminal-green-light);
+      color: var(--terminal-green-light);
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .control-btn:hover {
+      background: var(--terminal-green-light);
+      color: var(--bg-primary);
+      box-shadow: 0 0 10px var(--retro-shadow);
+    }
+
+    .control-btn.active {
+      background: var(--terminal-green-light);
+      color: var(--bg-primary);
+    }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .volume-slider {
+      flex: 1;
+      height: 4px;
+      background: var(--progress-bg);
+      border-radius: 2px;
+      outline: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      background: var(--terminal-green-light);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 5px var(--retro-shadow);
+    }
+
+    .volume-slider::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      background: var(--terminal-green-light);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 5px var(--retro-shadow);
+    }
+
+    .track-switch {
+      background: var(--terminal-green-light);
+      color: var(--bg-primary);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .track-switch:hover {
+      opacity: 0.8;
+    }
+
+    /* Snake Game Music Mute */
+    .snake-music-control {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      z-index: 2;
+    }
+
+    .snake-mute-btn {
+      background: var(--terminal-green);
+      border: none;
+      color: var(--crt-black);
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+    }
+
+    .snake-mute-btn:hover {
+      background: var(--terminal-white);
+    }
+
+    .snake-mute-btn.muted {
+      background: #ff5f56;
+      color: white;
+    }
+
+    /* ---------- Retro Computer Terminal ---------- */
     .retro-screen {
       width: 800px;
       height: 400px;
       margin: 0 auto;
-      background: #000;
-      border: 16px solid #222;
-      border-radius: 10px;
-      box-shadow: 0 0 30px #02d463, inset 0 0 10px #02d463;
+      background: var(--terminal-bg);
+      border: 16px solid var(--terminal-border);
+      border-radius: 12px;
+      box-shadow: 
+        0 0 30px var(--retro-shadow),
+        inset 0 0 15px rgba(0, 255, 65, 0.1),
+        0 15px 35px rgba(0, 0, 0, 0.8);
       position: relative;
       overflow: hidden;
-      /* Boot-up animation */
       opacity: 0;
       animation: bootup 3s ease-out forwards;
+      transition: all 0.3s ease;
     }
     @keyframes bootup {
       0% {
         opacity: 0;
-        transform: scale(0.8);
+        transform: scale(0.9);
         filter: brightness(0);
+      }
+      50% {
+        opacity: 0.7;
+        transform: scale(1.01);
+        filter: brightness(1.2);
       }
       80% {
         opacity: 1;
-        transform: scale(1.05);
-        filter: brightness(1.5);
+        transform: scale(1.02);
+        filter: brightness(1.3);
       }
       100% {
         opacity: 1;
@@ -62,6 +368,8 @@
         filter: brightness(1);
       }
     }
+
+    /* Retro Scanlines effect */
     .retro-screen::after {
       content: "";
       position: absolute;
@@ -73,78 +381,127 @@
         180deg,
         transparent,
         transparent 2px,
-        rgba(2, 212, 99, 0.05) 2px,
-        rgba(2, 212, 99, 0.05) 4px
+        rgba(0, 255, 65, 0.03) 2px,
+        rgba(0, 255, 65, 0.03) 4px
       );
       pointer-events: none;
+      animation: scanlines 0.1s linear infinite;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+    [data-theme="light"] .retro-screen::after {
+      background: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.02) 2px,
+        rgba(0, 0, 0, 0.02) 4px
+      );
+      opacity: 0.3;
+    }
+    @keyframes scanlines {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(4px); }
     }
 
+    /* Subtle flicker effect */
+    .retro-screen::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 255, 65, 0.02);
+      pointer-events: none;
+      animation: flicker 0.15s ease-in-out infinite alternate;
+      transition: background 0.3s ease;
+    }
+    [data-theme="light"] .retro-screen::before {
+      background: rgba(0, 0, 0, 0.01);
+    }
+    @keyframes flicker {
+      0% { opacity: 1; }
+      100% { opacity: 0.98; }
+    }
+
+    /* ---------- Retro Terminal Header ---------- */
     .terminal-header {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 30px;
-      background: #222;
+      height: 32px;
+      background: var(--bg-secondary);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding: 0 12px;
       font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      color: #02d463;
+      font-size: 0.85rem;
+      color: var(--terminal-green-light);
+      border-bottom: 1px solid var(--border-color);
+      transition: all 0.3s ease;
     }
     .terminal-controls {
       display: flex;
       align-items: center;
+      gap: 6px;
     }
     .terminal-controls .control {
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      margin-right: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    .terminal-controls .close {
-      background-color: #ff5f56;
+    .terminal-controls .control:hover {
+      transform: scale(1.1);
     }
-    .terminal-controls .minimize {
-      background-color: #ffbd2e;
+    .terminal-controls .close { 
+      background: #ff5f56;
     }
-    .terminal-controls .maximize {
-      background-color: #27c93f;
+    .terminal-controls .minimize { 
+      background: var(--terminal-amber-light);
+    }
+    .terminal-controls .maximize { 
+      background: var(--terminal-green-light);
     }
     .terminal-menu span {
       margin-left: 15px;
       cursor: pointer;
-      transition: color 0.3s ease;
+      transition: all 0.2s ease;
+      padding: 3px 8px;
+      border-radius: 3px;
+      color: var(--terminal-green-light);
     }
-    .terminal-menu span:hover {
-      color: #fff;
+    .terminal-menu span:hover { 
+      color: var(--text-primary);
+      background: rgba(0, 255, 65, 0.1);
     }
 
-    /* ---------- Dotted Heading for NAme ---------- */
+    /* ---------- Retro Dotted Heading ---------- */
     .dotted-heading {
       margin-top: 40px;
       text-align: left;
-      padding-left: 10px;
+      padding-left: 12px;
       overflow: hidden;
       clip-path: inset(100% 0 0 0);
       animation: revealHeading 3s forwards;
     }
-    @keyframes revealHeading {
-      to {
-        clip-path: inset(0 0 0 0);
-      }
+    @keyframes revealHeading { 
+      to { clip-path: inset(0 0 0 0); } 
     }
-    .dotted-heading svg {
-      width: 100%;
-      height: auto;
+    .dotted-heading svg { 
+      width: 100%; 
+      height: auto; 
+      filter: drop-shadow(0 0 5px var(--retro-shadow));
     }
 
-    /* ---------- Terminal text container ---------- */
+    /* ---------- Retro Terminal Text ---------- */
     #terminal {
-      margin-top: 10px;
-      padding: 0 10px;
+      margin-top: 12px;
+      padding: 0 12px;
       text-align: left;
       white-space: pre-wrap;
       word-wrap: break-word;
@@ -152,378 +509,607 @@
       max-height: calc(100% - 100px);
       scroll-behavior: smooth;
       font-family: 'Courier New', monospace;
-      font-size: 16px;
-      color: #02d463;
-      text-shadow: 0 0 5px #02d463;
+      font-size: 15px;
+      color: var(--terminal-text);
+      text-shadow: 0 0 3px var(--retro-shadow);
+      line-height: 1.3;
+      transition: all 0.3s ease;
     }
-    #terminal::-webkit-scrollbar {
-      width: 8px;
+    #terminal::-webkit-scrollbar { width: 8px; }
+    #terminal::-webkit-scrollbar-track { 
+      background: var(--scrollbar-bg); 
     }
-    #terminal::-webkit-scrollbar-track {
-      background: #000;
-    }
-    #terminal::-webkit-scrollbar-thumb {
-      background-color: #02d463;
+    #terminal::-webkit-scrollbar-thumb { 
+      background: var(--scrollbar-thumb);
       border-radius: 4px;
     }
 
-    /* ---------- Progress Bar in Terminal ---------- */
-    .install-progress-wrapper {
-      margin-top: 10px;
-    }
+    /* ---------- Retro Progress Bar in Terminal ---------- */
+    .install-progress-wrapper { margin-top: 12px; }
     .install-progress-title {
       font-family: 'Courier New', monospace;
-      font-size: 16px;
-      margin-bottom: 4px;
+      font-size: 15px;
+      margin-bottom: 5px;
+      text-shadow: 0 0 3px var(--retro-shadow);
+      color: var(--terminal-text);
     }
     .install-progress-container {
       width: 70%;
-      background: #333;
-      border: 1px solid #02d463;
-      border-radius: 4px;
+      background: var(--progress-bg);
+      border: 1px solid var(--terminal-green-light);
+      border-radius: 2px;
       overflow: hidden;
     }
     .install-progress-bar {
       height: 16px;
       width: 0%;
-      background: #02d463;
+      background: var(--terminal-green-light);
       transition: width 0.5s ease;
+      box-shadow: 0 0 5px var(--retro-shadow);
     }
 
-    /* ---------- Blinking Cursor ---------- */
+    /* ---------- Retro Blinking Cursor ---------- */
     .cursor {
       display: inline-block;
       width: 10px;
-      background-color: #02d463;
+      background: var(--terminal-green-light);
       margin-left: 2px;
       animation: blink 1s infinite;
     }
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0; }
-      100% { opacity: 1; }
+    @keyframes blink { 
+      0% { opacity: 1; } 
+      50% { opacity: 0; } 
+      100% { opacity: 1; } 
     }
+
+    /* Retro Buttons */
     #resetTerminal {
       display: none;
-      margin: 10px;
-      background: #02d463;
+      margin: 12px;
+      background: var(--terminal-green-light);
       border: none;
-      color: #121212;
+      color: var(--terminal-bg);
       padding: 8px 16px;
       font-family: 'Courier New', monospace;
-      font-size: 1rem;
+      font-size: 0.9rem;
       cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.2s ease;
     }
-    #resetTerminal:hover {
-      opacity: 0.8;
+    #resetTerminal:hover { 
+      background: var(--text-primary);
+      color: var(--bg-primary);
     }
-    /* ---------- Launch Button ---------- */
+
     #launchGame {
-      background: #02d463;
+      background: var(--terminal-green-light);
       border: none;
-      color: #121212;
-      padding: 4px 8px;
+      color: var(--terminal-bg);
+      padding: 4px 10px;
       font-family: 'Courier New', monospace;
       font-size: 0.8rem;
       cursor: pointer;
       display: inline;
-      margin-left: 5px;
+      margin-left: 6px;
+      border-radius: 2px;
+      transition: all 0.2s ease;
     }
-    #launchGame:hover {
-      opacity: 0.8;
-    }
-
-    .icon-toggle {
-      transition: transform 0.4s ease;
-    }
-    .icon-rotated {
-      transform: rotate(180deg);
+    #launchGame:hover { 
+      background: var(--text-primary);
+      color: var(--bg-primary);
     }
 
-    /* ---------- RESET & BASE STYLES ---------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* ---------- Retro Icon Rotation ---------- */
+    .icon-toggle { 
+      transition: transform 0.3s ease; 
     }
-    html {
-      scroll-behavior: smooth;
+    .icon-rotated { 
+      transform: rotate(180deg); 
+    }
+
+    /* ---------- Retro Base Styles ---------- */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    html { 
+      scroll-behavior: smooth; 
     }
     body {
-      font-family: "Open Sans", sans-serif;
-      background: #121212;
-      color: #f1f1f1;
+      font-family: "Courier New", monospace;
+      background: var(--bg-primary, var(--crt-black));
+      color: var(--text-primary, var(--terminal-white));
       line-height: 1.5;
-      padding-top: 4px;
+      padding-top: 3px;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
+    
+    /* Ensure default fallbacks for better initialization */
+    body:not([data-theme]) {
+      background: #0a0a0a;
+      color: #e9ecef;
+    }
+    a { 
+      color: inherit; 
+      text-decoration: none; 
+      transition: all 0.2s ease;
     }
 
-    /* ---------- Page Navbar ---------- */
+    /* ---------- Retro Navbar ---------- */
     nav {
       position: fixed;
-      top: 4px;
+      top: 3px;
       width: 100%;
-      background: #1f1f1f;
+      background: var(--bg-secondary);
+      backdrop-filter: blur(10px);
       z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 2rem;
+      padding: 0.8rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.3s ease;
     }
-    .nav-brand {
-      font-size: 1.5rem;
-      font-weight: bold;
+    .nav-brand { 
+      font-size: 1.4rem; 
+      font-weight: bold; 
+      color: var(--terminal-green-light);
+      text-shadow: 0 0 5px var(--retro-shadow);
+      transition: all 0.3s ease;
     }
-    .nav-links {
-      list-style: none;
+    .nav-right {
       display: flex;
-      gap: 1.5rem;
+      align-items: center;
+      gap: 1rem;
     }
-    .nav-links a {
-      color: #f1f1f1;
-      transition: color 0.3s ease;
-    }
-    .nav-links a:hover {
-      color: #b3b3b3;
-    }
-    .hamburger {
-      display: none;
-      font-size: 1.8rem;
+    .theme-toggle {
+      background: var(--terminal-green-light);
+      border: none;
+      color: var(--bg-primary);
+      padding: 6px 12px;
+      border-radius: 4px;
       cursor: pointer;
-      color: #f1f1f1;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+    }
+    .theme-toggle:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+    .theme-toggle i {
+      font-size: 14px;
+    }
+    .nav-links { 
+      list-style: none; 
+      display: flex; 
+      gap: 1.5rem; 
+    }
+    .nav-links a { 
+      color: var(--text-primary); 
+      transition: all 0.2s ease;
+      padding: 6px 12px;
+      border-radius: 3px;
+    }
+    .nav-links a:hover { 
+      color: var(--terminal-green-light);
+      background: rgba(0, 255, 65, 0.1);
+      text-shadow: 0 0 3px var(--retro-shadow);
+    }
+    .hamburger { 
+      display: none; 
+      font-size: 1.6rem; 
+      cursor: pointer; 
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+    .hamburger:hover {
+      color: var(--terminal-green-light);
     }
 
-    /* ---------- HERO  ---------- */
+    /* ---------- Retro HERO SECTION ---------- */
     .hero {
       width: 100%;
       height: 100vh;
       padding-top: 70px;
-      background: #000;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 65, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 176, 0, 0.05) 0%, transparent 50%),
+        var(--bg-primary);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
-    .hero-down {
-      margin-top: 2rem;
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,255,65,0.06)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      animation: gridMove 20s linear infinite;
+      opacity: 1;
+      transition: opacity 0.3s ease;
     }
-    .hero-down a {
+    [data-theme="light"] .hero::before {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      opacity: 0.5;
+    }
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(10px, 10px); }
+    }
+    .hero-down { 
+      margin-top: 2rem; 
+      z-index: 2;
+    }
+    .hero-down a { 
       display: inline-block;
+      transition: all 0.2s ease;
     }
-    .hero-down i {
-      font-size: 2rem;
-      color: #02d463;
+    .hero-down a:hover {
+      transform: translateY(3px);
+    }
+    .hero-down i { 
+      font-size: 1.8rem; 
+      color: var(--terminal-green-light);
+      text-shadow: 0 0 5px var(--retro-shadow);
+      animation: bounce 2s ease-in-out infinite;
+      transition: all 0.3s ease;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-8px); }
+      60% { transform: translateY(-4px); }
     }
 
-    /* ---------- WRAPPER ---------- */
+    /* ---------- Retro Section Wrapper ---------- */
     .section {
       width: 90%;
       max-width: 1100px;
       margin: 0 auto;
       padding: 4rem 0;
-    }
-    .section-title {
-      font-size: 2rem;
-      text-align: center;
-      margin-bottom: 2rem;
       position: relative;
     }
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 80px;
+      height: 1px;
+      background: var(--terminal-green-light);
+      transform: translateX(-50%);
+    }
+    .section-title {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+      color: var(--terminal-green-light);
+      text-shadow: 0 0 8px var(--retro-shadow);
+      font-family: 'Courier New', monospace;
+      transition: all 0.3s ease;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      width: 50px;
+      height: 2px;
+      background: var(--terminal-green-light);
+      transform: translateX(-50%);
+    }
 
-    /* ---------- KEY SKILLS ---------- */
+    /* ---------- Retro Skills ---------- */
     .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 2rem;
+      justify-content: center;
       align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     .skill-card {
-      background: #1f1f1f;
+      background: var(--card-bg, rgba(26, 26, 26, 0.6));
       border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      padding: 1.5rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--border-color, #333);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      padding: 1.8rem;
+      transition: all 0.3s ease;
+      position: relative;
+      width: 350px;
+      min-height: 200px;
+      flex: 0 0 auto;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--terminal-green-light);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
     }
     .skill-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 30px rgba(0, 255, 65, 0.1);
+      border-color: var(--terminal-green-light);
     }
-    .skill-card h3 {
-      margin-bottom: 0.5rem;
-      font-size: 1.2rem;
-      color: #02d463;
+    .skill-card:hover::before {
+      transform: scaleX(1);
     }
-    .skill-card p {
-      font-size: 0.9rem;
-      color: #ccc;
-      line-height: 1.4;
+    .skill-card h3 { 
+      margin-bottom: 0.8rem; 
+      font-size: 1.2rem; 
+      color: var(--terminal-green-light);
+      text-shadow: 0 0 3px var(--retro-shadow);
+      font-family: 'Courier New', monospace;
     }
-    .skill-toggle {
-      display: inline-block;
-      margin-top: 0.75rem;
-      cursor: pointer;
-      color: #02d463;
+    .skill-card p { 
+      font-size: 0.9rem; 
+      color: var(--text-secondary); 
+      line-height: 1.5; 
+      margin-bottom: 1rem;
+    }
+    
+    /* Ensure better contrast in dark mode */
+    [data-theme="dark"] .skill-card p,
+    [data-theme="dark"] .exp-content p,
+    [data-theme="dark"] .exp-details p,
+    [data-theme="dark"] .about-content p {
+      color: #d1d5db;
+    }
+    .skill-toggle { 
+      display: inline-block; 
+      margin-top: 0.8rem; 
+      cursor: pointer; 
+      color: var(--terminal-green-light); 
       font-size: 0.85rem;
+      padding: 6px 12px;
+      background: rgba(0, 255, 65, 0.05);
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(0, 255, 65, 0.2);
+    }
+    .skill-toggle:hover {
+      background: rgba(0, 255, 65, 0.1);
     }
     .skill-details {
       max-height: 0;
       overflow: hidden;
-      margin-top: 0.5rem;
-      transition: max-height 0.4s ease, opacity 0.4s ease;
+      margin-top: 1rem;
+      transition: all 0.4s ease;
       opacity: 0;
     }
-    .skill-details p {
-      font-size: 0.85rem;
-      line-height: 1.4;
-      color: #ddd;
-      margin-bottom: 1rem;
+    .skill-details p { 
+      font-size: 0.85rem; 
+      line-height: 1.5; 
+      color: var(--text-secondary); 
+      margin-bottom: 1.2rem; 
     }
-    .skill-details img {
-      width: 100%;
-      margin-bottom: 1rem;
-      border-radius: 4px;
+    .skill-details img { 
+      width: 100%; 
+      margin-bottom: 1.2rem; 
+      border-radius: 4px; 
     }
-    .skill-resources {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    .skill-resources { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 0.6rem; 
     }
     .skill-resources a {
       font-size: 0.75rem;
-      color: #02d463;
-      background: #333;
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
+      color: var(--terminal-green-light);
+      background: var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: 3px;
       display: inline-block;
-      transition: background 0.3s ease;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(0, 255, 65, 0.3);
     }
-    .skill-resources a:hover {
-      background: #02d463;
-      color: #121212;
+    .skill-resources a:hover { 
+      background: var(--terminal-green-light);
+      color: var(--bg-primary);
     }
 
-    /* ---------- EXPERIENCE Grid ---------- */
+    /* ---------- Retro Experience ---------- */
     .experience-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 2rem;
+      justify-content: center;
       align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     .exp-card {
-      background: #1f1f1f;
+      background: var(--card-bg, rgba(26, 26, 26, 0.6));
       border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--border-color, #333);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+      width: 380px;
+      flex: 0 0 auto;
+    }
+    .exp-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--terminal-green-light);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
     }
     .exp-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 30px rgba(0, 255, 65, 0.1);
+      border-color: var(--terminal-green-light);
     }
-    .exp-image {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
+    .exp-card:hover::before {
+      transform: scaleX(1);
+    }
+    .exp-image { 
+      width: 100%; 
+      height: 200px; 
+      object-fit: cover; 
       display: block;
+      transition: all 0.3s ease;
+      filter: grayscale(0.3);
     }
-    .exp-content {
-      padding: 1rem;
+    .exp-card:hover .exp-image {
+      filter: grayscale(0);
     }
-    .exp-content h3 {
-      margin-bottom: 0.5rem;
+    .exp-content { 
+      padding: 1.5rem; 
+    }
+    .exp-content h3 { 
+      margin-bottom: 0.8rem; 
       font-size: 1.2rem;
+      color: var(--terminal-green-light);
+      text-shadow: 0 0 3px var(--retro-shadow);
+      font-family: 'Courier New', monospace;
     }
-    .exp-content p {
-      font-size: 0.9rem;
-      line-height: 1.4;
-      color: #ccc;
+    .exp-content p { 
+      font-size: 0.9rem; 
+      line-height: 1.5; 
+      color: var(--text-secondary); 
     }
-    .exp-links {
-      margin-top: 1rem;
-      display: flex;
-      gap: 1rem;
+    .exp-links { 
+      margin-top: 1.2rem; 
+      display: flex; 
+      gap: 1rem; 
     }
-    .exp-links a {
-      font-size: 0.8rem;
-      color: #02d463;
+    .exp-links a { 
+      font-size: 0.85rem; 
+      color: var(--terminal-green-light);
+      padding: 6px 12px;
+      background: rgba(0, 255, 65, 0.05);
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(0, 255, 65, 0.3);
     }
-    .exp-toggle {
-      display: inline-block;
-      margin-top: 0.75rem;
-      cursor: pointer;
-      color: #02d463;
+    .exp-links a:hover {
+      background: var(--terminal-green-light);
+      color: var(--bg-primary);
+    }
+    .exp-toggle { 
+      display: inline-block; 
+      margin-top: 0.8rem; 
+      cursor: pointer; 
+      color: var(--terminal-green-light); 
       font-size: 0.85rem;
+      padding: 6px 12px;
+      background: rgba(0, 255, 65, 0.05);
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(0, 255, 65, 0.2);
+    }
+    .exp-toggle:hover {
+      background: rgba(0, 255, 65, 0.1);
     }
     .exp-details {
       max-height: 0;
       overflow: hidden;
-      margin: 0 1rem;
-      transition: max-height 0.4s ease, opacity 0.4s ease;
+      margin: 0 1.5rem;
+      transition: all 0.4s ease;
       opacity: 0;
     }
-    .exp-details p {
-      font-size: 0.85rem;
-      line-height: 1.4;
-      color: #ddd;
-      margin-bottom: 1rem;
+    .exp-details p { 
+      font-size: 0.85rem; 
+      line-height: 1.5; 
+      color: var(--text-secondary); 
+      margin-bottom: 1.2rem; 
     }
-    .exp-details img {
-      width: 100%;
-      margin-bottom: 1rem;
-      border-radius: 4px;
+    .exp-details img { 
+      width: 100%; 
+      margin-bottom: 1.2rem; 
+      border-radius: 4px; 
     }
-    .exp-resources {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
+    .exp-resources { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 0.6rem; 
+      margin-top: 1rem; 
     }
     .exp-resources a {
       font-size: 0.75rem;
-      color: #02d463;
-      background: #333;
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
+      color: var(--terminal-green-light);
+      background: var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: 3px;
       display: inline-block;
-      transition: background 0.3s ease;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(0, 255, 65, 0.3);
     }
-    .exp-resources a:hover {
-      background: #02d463;
-      color: #121212;
+    .exp-resources a:hover { 
+      background: var(--terminal-green-light);
+      color: var(--bg-primary);
     }
 
-    /* ---------- ABOUT SECTION ---------- */
+    /* ---------- Retro About ---------- */
     .about-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 2rem;
+      gap: 2.5rem;
+      padding: 2rem;
+      background: var(--card-bg, rgba(26, 26, 26, 0.4));
+      border-radius: 12px;
+      border: 1px solid var(--border-color, #333);
     }
     .about-image {
       width: 180px;
       height: 180px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid #02d463;
+      border: 2px solid var(--terminal-green-light);
+      box-shadow: 0 0 20px var(--retro-shadow);
+      transition: all 0.3s ease;
+      filter: grayscale(0.2);
     }
-    .about-content {
-      max-width: 800px;
+    .about-image:hover {
+      transform: scale(1.05);
+      filter: grayscale(0);
     }
-    .about-content p {
-      line-height: 1.5;
-      color: #ccc;
+    .about-content { 
+      max-width: 800px; 
+    }
+    .about-content p { 
+      line-height: 1.6; 
+      color: var(--text-secondary); 
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
     }
 
-    /* ---------- CONTACT ---------- */
+    /* ---------- Retro Contact ---------- */
     .contact-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2rem;
+      gap: 2.5rem;
     }
     .contact-links {
       display: flex;
@@ -533,7 +1119,7 @@
       margin-bottom: 2rem;
     }
     .contact-link {
-      background: #1f1f1f;
+      background: var(--card-bg, rgba(26, 26, 26, 0.6));
       width: 120px;
       height: 120px;
       border-radius: 8px;
@@ -541,100 +1127,235 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      color: #fff;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color, #333);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      color: var(--text-primary, var(--terminal-white));
+      position: relative;
+    }
+    .contact-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 255, 65, 0.05);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 8px;
     }
     .contact-link:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 30px rgba(0, 255, 65, 0.1);
+      border-color: var(--terminal-green-light);
     }
-    .contact-link i {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: #02d463;
+    .contact-link:hover::before {
+      opacity: 1;
     }
-    .contact-info {
-      text-align: center;
-      color: #ccc;
-      font-size: 0.9rem;
+    .contact-link i { 
+      font-size: 2.2rem; 
+      margin-bottom: 0.8rem; 
+      color: var(--terminal-green-light);
+      text-shadow: 0 0 5px var(--retro-shadow);
+      transition: all 0.2s ease;
+    }
+    .contact-link:hover i {
+      transform: scale(1.1);
+    }
+    .contact-info { 
+      text-align: center; 
+      color: var(--text-secondary); 
+      font-size: 0.9rem; 
     }
 
-    /* ---------- RESUME SECTION ---------- */
-    .resume-download a {
-      text-decoration: none;
-    }
-
-    /* ---------- UP ARROW ---------- */
-    .up-arrow {
+    /* ---------- Retro Resume ---------- */
+    .resume-download { 
       text-align: center;
-      margin: 2rem 0;
+      padding: 2rem;
+      background: var(--section-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
     }
-    .up-arrow a {
+    .resume-download a { 
       display: inline-block;
+      transition: all 0.3s ease;
     }
-    .up-arrow i {
-      font-size: 2rem;
-      color: #02d5d5;
+    .resume-download a:hover {
+      transform: translateY(-5px);
+    }
+    .resume-download img {
+      width: 4rem;
+      height: 4rem;
+      filter: 
+        invert(1) 
+        sepia(1) 
+        saturate(5) 
+        hue-rotate(90deg);
+      transition: all 0.3s ease;
+    }
+    .resume-download a:hover img {
+      filter: 
+        invert(1) 
+        sepia(1) 
+        saturate(5) 
+        hue-rotate(90deg)
+        drop-shadow(0 0 10px var(--retro-shadow));
     }
 
-    /* ---------- FOOTER ---------- */
+    /* ---------- Retro Up Arrow ---------- */
+    .up-arrow { 
+      text-align: center; 
+      margin: 2.5rem 0; 
+    }
+    .up-arrow a { 
+      display: inline-block;
+      padding: 0.8rem;
+      background: var(--card-bg);
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+    .up-arrow a:hover {
+      transform: translateY(-3px);
+      border-color: var(--terminal-green-light);
+      box-shadow: 0 5px 15px rgba(0, 255, 65, 0.1);
+    }
+    .up-arrow i { 
+      font-size: 1.8rem; 
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+    .up-arrow a:hover i {
+      color: var(--terminal-green-light);
+      text-shadow: 0 0 5px var(--retro-shadow);
+    }
+
+    /* ---------- Retro Footer ---------- */
     footer {
-      background: #1f1f1f;
+      background: var(--bg-secondary);
       text-align: center;
-      color: #ccc;
-      padding: 1rem;
+      color: var(--text-secondary);
+      padding: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      transition: all 0.3s ease;
     }
-    #user-ip {
-      font-size: 0.8rem;
+    #user-ip { 
+      font-size: 0.85rem; 
       margin-top: 1rem;
+      color: var(--text-secondary);
     }
 
-    /* ---------- MEDIA QUERIES ---------- */
-    @media (max-width: 800px) {
-      .retro-screen {
-        width: 95%;
-        height: auto;
-        padding: 10px;
-        border: 8px solid #222;
+    /* ---------- Retro PC Off Screen ---------- */
+    #pcOffScreen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--crt-black);
+      z-index: 12000;
+      color: var(--terminal-white);
+      font-family: 'Courier New', monospace;
+    }
+    #pcOffScreen .pcOffContent { 
+      position: relative; 
+      width: 100%; 
+      height: 100%; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5% 2%;
+    }
+    #pcOffScreen .message {
+      background: rgba(255, 176, 0, 0.9);
+      padding: 20px 30px;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      text-align: center;
+      color: var(--crt-black);
+      box-shadow: 0 5px 20px rgba(255, 176, 0, 0.3);
+      animation: messageFloat 2s ease-in-out infinite alternate;
+      max-width: 500px;
+      margin-top: 10%;
+    }
+    @keyframes messageFloat {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-5px); }
+    }
+    
+    /* Enhanced Round Red Power Button */
+    #pcOffScreen .powerBtn {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle at 30% 30%, #ff6b6b, #dc143c, #8b0000);
+      border: 4px solid #ff4444;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.2;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      box-shadow: 
+        0 0 20px rgba(255, 0, 0, 0.4),
+        inset 0 2px 5px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+      animation: powerGlow 2s ease-in-out infinite alternate;
+      margin-bottom: 5%;
+    }
+    @keyframes powerGlow {
+      0% { 
+        box-shadow: 
+          0 0 20px rgba(255, 0, 0, 0.4),
+          inset 0 2px 5px rgba(255, 255, 255, 0.2),
+          inset 0 -2px 5px rgba(0, 0, 0, 0.3);
       }
-      #terminal {
-        font-size: 14px;
-      }
-      .dotted-heading svg text {
-        font-size: 40px;
+      100% { 
+        box-shadow: 
+          0 0 30px rgba(255, 0, 0, 0.7),
+          0 0 50px rgba(255, 0, 0, 0.3),
+          inset 0 2px 5px rgba(255, 255, 255, 0.3),
+          inset 0 -2px 5px rgba(0, 0, 0, 0.2);
       }
     }
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        right: 0;
-        background: #1f1f1f;
-        width: 200px;
-        padding: 1rem;
-      }
-      .nav-links.active {
-        display: flex;
-      }
-      .hamburger {
-        display: block;
-      }
+    #pcOffScreen .powerBtn:hover {
+      transform: scale(1.1);
+      background: radial-gradient(circle at 30% 30%, #ff5555, #ff0000, #cc0000);
+      box-shadow: 
+        0 0 40px rgba(255, 0, 0, 0.8),
+        0 0 60px rgba(255, 0, 0, 0.4),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3);
+      animation: powerPulse 0.5s ease-in-out infinite alternate;
     }
-    @media (max-width: 480px) {
-      .retro-screen {
-        width: 90%;
-        height: 40vh;
-      }
-      #terminal {
-        height: calc(40vh - 50px) !important;
-        max-height: calc(40vh - 50px) !important;
-      }
+    @keyframes powerPulse {
+      0% { transform: scale(1.1); }
+      100% { transform: scale(1.15); }
+    }
+    #pcOffScreen .powerBtn:active {
+      transform: scale(1.05);
+      box-shadow: 
+        0 0 25px rgba(255, 0, 0, 0.6),
+        inset 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+    #pcCanvas { 
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%; 
+      height: 100%; 
+      z-index: -1;
     }
 
-    /* ---------- Snake Modal Styles ---------- */
+    /* ---------- Retro Snake Game Modal ---------- */
     #snakeModal {
       display: none;
       position: absolute;
@@ -642,35 +1363,39 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000; 
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
       z-index: 11000;
-      color: #02d463;
+      color: var(--terminal-green);
       font-family: 'Courier New', monospace;
-      overflow: hidden; 
+      overflow: hidden;
     }
     #snakeModal .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
-      background: #222;
+      padding: 12px 20px;
+      background: rgba(34, 34, 34, 0.9);
+      border-bottom: 1px solid #333;
     }
-    #snakeModal .modal-header h2 {
-      margin: 0;
-      font-size: 1.2rem;
+    #snakeModal .modal-header h2 { 
+      margin: 0; 
+      font-size: 1.3rem;
+      color: var(--terminal-green);
+      text-shadow: 0 0 5px var(--retro-shadow);
     }
     #snakeModal .modal-header .close-modal {
       cursor: pointer;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: bold;
-      color: #fff;
-      background: #e74c3c;
-      padding: 4px 8px;
+      color: var(--terminal-white);
+      background: #ff5f56;
+      padding: 4px 10px;
       border-radius: 4px;
-      transition: background 0.3s ease;
+      transition: all 0.2s ease;
     }
-    #snakeModal .modal-header .close-modal:hover {
-      background: #c0392b;
+    #snakeModal .modal-header .close-modal:hover { 
+      background: #ff3030;
     }
     #snakeModal .modal-content {
       position: relative;
@@ -678,264 +1403,550 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: calc(100% - 40px);
+      height: calc(100% - 50px);
+      padding: 1.5rem;
+    }
+
+    /* Snake Game UI */
+    .game-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      color: var(--terminal-green);
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: #ccc;
+      display: block;
+    }
+    .stat-value {
+      font-weight: bold;
+      text-shadow: 0 0 3px var(--retro-shadow);
     }
     #notif {
       position: absolute;
-      top: 10px;
+      top: 15px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(231, 76, 60, 0.9);
-      color: #fff;
+      background: rgba(255, 176, 0, 0.9);
+      color: var(--crt-black);
       padding: 10px 20px;
-      border-radius: 4px;
-      font-size: 1.2rem;
+      border-radius: 5px;
+      font-size: 1.1rem;
       z-index: 2;
       display: none;
     }
     #notif .close-notif {
-      margin-left: 10px;
+      margin-left: 12px;
       cursor: pointer;
       font-weight: bold;
     }
-    #scoreDisplay {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
     #snakeModal canvas {
-      border: 2px solid #02d463;
-      background: #000;
+      border: 2px solid var(--terminal-green);
+      background: var(--crt-black);
+      box-shadow: 0 0 20px var(--retro-shadow);
+      border-radius: 4px;
     }
-    #snakeModal .instructions {
-      margin-top: 10px;
+    #snakeModal .instructions { 
+      margin-top: 12px; 
       text-align: center;
+      color: #ccc;
+      font-size: 0.9rem;
     }
     #snakeModal .mobile-controls {
-      margin-top: 10px;
+      margin-top: 12px;
       display: flex;
       gap: 10px;
     }
     #snakeModal .mobile-controls button {
-      background: #02d463;
-      color: #121212;
+      background: var(--terminal-green);
+      color: var(--crt-black);
       border: none;
       padding: 10px;
-      border-radius: 5px;
-      font-size: 1.2rem;
+      border-radius: 4px;
+      font-size: 1.1rem;
       cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Courier New', monospace;
+    }
+    #snakeModal .mobile-controls button:hover {
+      background: var(--terminal-white);
     }
     #restartSnakeButton {
       display: none;
-      margin-top: 10px;
-      background: #02d463;
+      margin-top: 12px;
+      background: var(--terminal-green);
       border: none;
-      color: #121212;
+      color: var(--crt-black);
       padding: 8px 16px;
       cursor: pointer;
       font-family: 'Courier New', monospace;
       font-size: 1rem;
+      border-radius: 4px;
+      transition: all 0.2s ease;
     }
-    #restartSnakeButton:hover {
-      opacity: 0.8;
+    #restartSnakeButton:hover { 
+      background: var(--terminal-white);
+    }
+
+    /* ---------- Responsive Design ---------- */
+    @media (max-width: 800px) {
+      .retro-screen {
+        width: 95%;
+        height: auto;
+        padding: 12px;
+        border: 8px solid #333;
+      }
+      #terminal { 
+        font-size: 13px; 
+      }
+      .dotted-heading svg text { 
+        font-size: 40px; 
+      }
+      .section-title {
+        font-size: 1.8rem;
+      }
+      .skills-grid,
+      .experience-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .music-controller {
+        width: 240px;
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+    @media (max-width: 768px) {
+      .nav-right {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background: var(--bg-secondary);
+        backdrop-filter: blur(10px);
+        width: 220px;
+        padding: 1.2rem;
+        border-radius: 0 0 0 8px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .nav-links.active { 
+        display: flex; 
+      }
+      .hamburger { 
+        display: block; 
+        order: 2;
+      }
+      .theme-toggle {
+        order: 1;
+        margin-right: 0.5rem;
+      }
+      .skill-card,
+      .exp-card {
+        width: 100%;
+        max-width: 400px;
+      }
+      .contact-links {
+        gap: 1.2rem;
+      }
+      .contact-link {
+        width: 100px;
+        height: 100px;
+      }
+      .about-wrapper {
+        gap: 1.8rem;
+        padding: 1.5rem;
+      }
+      .about-image {
+        width: 140px;
+        height: 140px;
+      }
+      .game-stats {
+        gap: 1.5rem;
+        font-size: 1rem;
+      }
+      .music-controller {
+        width: 220px;
+        bottom: 10px;
+        right: 10px;
+      }
+      .music-controller.minimized {
+        width: 75px;
+        height: 75px;
+      }
+      /* Tablet PC Off Screen adjustments */
+      #pcOffScreen .message {
+        font-size: 1.2rem;
+        max-width: 400px;
+      }
+      #pcOffScreen .powerBtn {
+        width: 90px;
+        height: 90px;
+        font-size: 0.85rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .retro-screen {
+        width: 90%;
+        height: 300px;
+      }
+      #terminal {
+        height: 230px !important;
+        max-height: 230px !important;
+        font-size: 12px;
+      }
+      .section {
+        width: 95%;
+        padding: 3rem 0;
+      }
+      .section-title {
+        font-size: 1.6rem;
+      }
+      .skill-card,
+      .exp-card {
+        width: 100%;
+        max-width: 380px;
+        padding: 1.3rem;
+      }
+      .contact-link {
+        width: 90px;
+        height: 90px;
+      }
+      .contact-link i {
+        font-size: 1.8rem;
+      }
+      .game-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .music-controller {
+        width: 200px;
+        bottom: 10px;
+        right: 10px;
+        padding: 12px;
+      }
+      .music-controller.minimized {
+        width: 70px;
+        height: 70px;
+      }
+    }
+
+    /* ---------- Retro Particles ---------- */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .particle {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: var(--terminal-green-light);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+      opacity: 0.2;
+      transition: background 0.3s ease;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(180deg); }
+    }
+
+    /* ---------- Scroll Animations ---------- */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
 
-  <!-- Scroll Progress Bar -->
+  <!-- Retro Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Retro Scroll Progress Bar -->
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
 
-  <!-- Page Navbar -->
+  <!-- Enhanced Navbar with Theme Toggle -->
   <nav>
-    <div class="nav-brand"><code>DAVE NAIR</code></div>
-    <div class="hamburger"><i class="fa fa-bars"></i></div>
-    <ul class="nav-links">
-      <li><a href="#hero">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#resume">Resume</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <div class="nav-brand"><a href="#hero"><code>DAVE NAIR</code></a></div>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#resume">Resume</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode" type="button">
+        <i class="fa fa-sun-o" aria-hidden="true"></i>
+      </button>
+      <div class="hamburger"><i class="fa fa-bars"></i></div>
+    </div>
   </nav>
 
+  <!-- RETRO HERO SECTION WITH TERMINAL -->
   <section id="hero" class="hero">
-    <div class="retro-screen" id="retro-screen">
-      <!-- Terminal Header with Updated Window Controls & Menu -->
+    <div class="retro-screen fade-in" id="retro-screen">
+      <!-- Retro Terminal Header -->
       <div class="terminal-header">
         <div class="terminal-controls">
-          <span class="control close"></span>
-          <span class="control minimize"></span>
+          <span class="control close" id="macClose"></span>
+          <span class="control minimize" id="macMinimize"></span>
           <span class="control maximize"></span>
         </div>
         <div class="terminal-menu">
           <ul class="nav-links">
-            <!-- <li><a href="#hero" style="color: #02d463;">Home</a></li> -->
-            <li><a href="#about" style="color: #02d463;">About</a></li>
-            <li><a href="#skills" style="color: #02d463;">Skills</a></li>
-            <li><a href="#experience" style="color: #02d463;">Experience</a></li>
-            <li><a href="#resume" style="color: #02d463;">Resume</a></li>
-            <li><a href="#contact" style="color: #02d463;">Contact</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#resume">Resume</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
         </div>
       </div>
-      <!-- Heading  -->
+      <!-- Retro Dotted Heading -->
       <div class="dotted-heading">
         <svg viewBox="0 0 600 100" preserveAspectRatio="xMinYMin meet">
           <text x="0" y="70" 
                 font-family="Courier New, monospace" 
                 font-size="60" 
-                stroke="#02d463" 
+                stroke="var(--terminal-green-light, #00ff41)" 
                 stroke-width="2" 
                 stroke-linecap="round" 
                 stroke-dasharray="2,2" 
-                fill="none">
+                fill="none"
+                id="heroText">
             DAVE NAIR
           </text>
         </svg>
       </div>
-
+      <!-- Retro Terminal Content -->
       <div id="terminal"></div>
       <br>
-      <!-- Reboot Terminal Button-->
+      <!-- Retro Reboot Terminal Button -->
       <button id="resetTerminal">Reboot Terminal</button>
     </div>
-    <!-- Down arr button to scroll to About -->
-    <div class="hero-down" style="text-align: center; margin-top: 20px;">
-      <a href="#about" style="color: #02d463; font-size: 24px;">
+    <!-- Retro Down Arrow -->
+    <div class="hero-down">
+      <a href="#about">
         <br>
         <i class="fa fa-chevron-down"></i>
       </a>
     </div>
   </section>
 
-  <!-- ABOUT SECTION -->
-  <section id="about" class="section">
+  <!-- RETRO ABOUT SECTION -->
+  <section id="about" class="section fade-in">
     <h2 class="section-title"><code>About Me</code></h2>
     <div class="about-wrapper">
-      <img 
-        src="/static/images/1709232116646.jpeg" 
-        alt="Dave Nair Portrait" 
-        class="about-image"
-      />
+      <img src="/DaveNair1.github.io/static/images/Screenshot 2025-06-23 at 16.49.15.png" alt="Dave Nair Portrait" class="about-image" />
       <div class="about-content" id="aboutContent">
         <p>
-          Hello! I am <strong>Dave Nair</strong>, a Full-Stack Web Developer based in <strong>Melbourne</strong> who loves creating user-friendly websites and intuitive UI/UX designs. I focus on simplicity and attention to detail to build engaging interfaces.
+          Hello! I am <strong>Dave Nair</strong>, a Full-Stack Web Developer and Sessional Academic based in <strong>Melbourne</strong> who loves creating user-friendly websites, intuitive UI/UX designs, and providing comprehensive technical support for educational technology systems.
         </p>
-        <br/>
         <p>
-          I follow proven methodologies to craft clean and reliable solutions, often developing modern single-page applications that deliver a smooth user experience.
+          I follow proven methodologies to craft clean and reliable solutions, applying strategic ambidexterity concepts and GDPR compliance frameworks. Currently pursuing my Bachelor of Information Technology (Security Management) at Deakin University while working professionally in both development and academic roles.
         </p>
-        <br/>
         <p>
-          Let’s connect and explore how we can create digital experiences that are both attractive and functional.
+          Let's connect and explore how we can create digital experiences that are secure, compliant, and functionally exceptional while maintaining the highest ethical standards.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- KEY SKILLS SECTION -->
-  <section id="skills" class="section">
-    <h2 class="section-title"><code>Key Skills</code></h2>
+  <!-- RETRO KEY SKILLS SECTION -->
+  <section id="skills" class="section fade-in">
+    <h2 class="section-title"><code>Technical Skills</code></h2>
     <div class="skills-grid">
-      <!-- Skill Card 1: Django & Python -->
+      <!-- Updated Skill Card 1 -->
       <div class="skill-card">
-        <h3><code>Django & Python</code></h3>
+        <h3><code>Full-Stack Development</code></h3>
         <p>
-          Develop robust backends with RESTful APIs, secure authentication and database integrations.
+          Expert in Django, Python, PostgreSQL for robust backend systems. Proficient in HTML5, CSS3, JavaScript, Alpine.js, HTMX, and Tailwind CSS for modern frontend experiences.
         </p>
         <span class="skill-toggle">
-          Expand Details 
-          <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
-            I utilise Django's MVT architecture and ORM for clean, maintainable code. 
-            I also integrate testing frameworks like <code>PyTest</code> and <code>unittest</code> to ensure reliability.
+            I build scalable web applications using Django's MVT architecture, implement RESTful APIs, and create responsive front-ends with modern frameworks. Experience with Docker containerization and PostgreSQL database optimization for enhanced performance.
           </p>
           <div class="skill-resources">
-            <a href="https://www.djangoproject.com/" target="_blank">Django Docs</a>
-            <a href="https://docs.pytest.org/en/stable/" target="_blank"><code>PyTest</code></a>
+            <a href="https://www.djangoproject.com/" target="_blank">Django</a>
+            <a href="https://htmx.org/" target="_blank">HTMX</a>
+            <a href="https://alpinejs.dev/" target="_blank">Alpine.js</a>
+            <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>
           </div>
         </div>
       </div>
-
-      <!-- Skill Card 2: Frontend Development -->
+      
+      <!-- Updated Skill Card 2 -->
       <div class="skill-card">
-        <h3><code>Frontend Development</code></h3>
+        <h3><code>DevOps & Compliance</code></h3>
         <p>
-          Build interactive, responsive & modern front-ends with <code>HTMX</code>, <code>Alpine.js</code>, and <code>Tailwind CSS</code>.
+          Implement OWASP ASVS security standards, GDPR compliance, Docker containerization, and collaborative workflows using Git, Jira, and Confluence for enterprise-level projects.
         </p>
         <span class="skill-toggle">
-          Expand Details 
-          <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
-            I build interactive SPAs using <code>HTMX</code> for seamless server communication, <code>Alpine.js</code> for lightweight reactivity, and <code>Tailwind CSS</code> for utility-first styling. My work often involves designing and implementing UI components based on Figma wireframes, ensuring consistency with the design system and improving user experience.
+            I apply security best practices following OWASP guidelines and privacy regulations like GDPR. Manage CI/CD pipelines with Docker, coordinate development workflows using Agile methodologies, and ensure regulatory compliance including data breach notification requirements.
           </p>
           <div class="skill-resources">
-            <a href="https://htmx.org/" target="_blank">HTMX Docs</a>
-            <a href="https://www.figma.com/" target="_blank">Figma</a>
+            <a href="https://github.com/OWASP/ASVS" target="_blank">OWASP ASVS</a>
+            <a href="https://eugdpr.org/" target="_blank">GDPR</a>
+            <a href="https://www.docker.com/" target="_blank">Docker</a>
+            <a href="https://www.atlassian.com/software/jira" target="_blank">Jira</a>
           </div>
         </div>
       </div>
-
-      <!-- Skill Card 3: Security Management & Governance -->
+      
+      <!-- New Skill Card 3 -->
       <div class="skill-card">
-        <h3><code>Security Management</code></h3>
+        <h3><code>Technical Support & Training</code></h3>
         <p>
-          Enhance resilience through robust security planning, governance, and cyber risk management.
+          Provide comprehensive technical support for educational technology, live-streaming systems, and hybrid learning environments while training stakeholders on best practices.
         </p>
         <span class="skill-toggle">
-          Expand Details 
-          <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
         </span>
         <div class="skill-details">
           <p>
-            I apply industry standards like <code>ASVS</code> to architect secure systems and integrate <code>ISM</code> best practices to manage cyber risks. My approach encompasses security governance, change management, and continuous monitoring to ensure organisational resilience and compliance.
+            I deliver proactive technical support for hybrid live-streaming lectures, troubleshoot complex technical issues, and facilitate stakeholder communication. Experienced in educational technology support and employee training on cybersecurity ethics and compliance frameworks.
           </p>
           <div class="skill-resources">
-            <a href="https://github.com/OWASP/ASVS" target="_blank">ASVS Guidelines</a>
-            <a href="https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/ism" target="_blank">ISM Best Practices</a>
+            <a href="https://www.deakin.edu.au/" target="_blank">Educational Technology</a>
+            <a href="https://www.atlassian.com/itsm/itil" target="_blank">ITIL Support</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Updated Skill Card 4 -->
+      <div class="skill-card">
+        <h3><code>Business Analysis & Requirements</code></h3>
+        <p>
+          Skilled in stakeholder needs analysis, use case development, system modeling, and requirements documentation for digital business transformation projects.
+        </p>
+        <span class="skill-toggle">
+          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+        </span>
+        <div class="skill-details">
+          <p>
+            I analyze business contexts and processes to propose viable solutions, develop comprehensive requirement analysis reports, create use case diagrams, and design system architectures. Experienced in stakeholder management and business process modeling for sustainable technology solutions.
+          </p>
+          <div class="skill-resources">
+            <a href="https://www.atlassian.com/agile" target="_blank">Agile Analysis</a>
+            <a href="https://www.atlassian.com/software/confluence" target="_blank">Documentation</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Updated Skill Card 5 -->
+      <div class="skill-card">
+        <h3><code>Strategic Analysis & Global Mindset</code></h3>
+        <p>
+          Experienced in strategic ambidexterity, institutional theory application, international business risk assessment, and AI integration for competitive advantage and operational excellence.
+        </p>
+        <span class="skill-toggle">
+          Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+        </span>
+        <div class="skill-details">
+          <p>
+            I apply the Strategy Tripod framework (industry-based, resource-based, and institution-based views) for strategic decision making. Skilled in CAGE distance analysis, liability of foreignness assessment, and strategic alliance evaluation for global business operations.
+          </p>
+          <div class="skill-resources">
+            <a href="https://www.python.org/" target="_blank">Python Analytics</a>
+            <a href="https://www.postgresql.org/" target="_blank">Data Analysis</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- EXPERIENCE SECTION -->
-  <section id="experience" class="section">
+  <!-- RETRO EXPERIENCE SECTION -->
+  <section id="experience" class="section fade-in">
     <h2 class="section-title"><code>Professional Experience</code></h2>
     <div class="experience-grid">
-      <!-- Card 1 -->
+      
+      <!-- New Experience Card 1: Sessional Academic -->
       <div class="exp-card">
-        <img 
-          src="/static/images/software-developer-6521720_1280.jpg" 
-          alt="Junior Web Developer Image" 
-          class="exp-image"
-        />
+        <img src="/DaveNair1.github.io/static/images/rashid-tajuar-g0nVEyiDBAI-unsplash.jpg" alt="Deakin University Academic Role" class="exp-image" />
         <div class="exp-content">
-          <h3>Junior Web Developer</h3>
+          <h3>Sessional Academic - Deakin University</h3>
           <p>
-            Currently spearheading secure, scalable web apps with Django, Tailwind CSS, Alpine.js, and Docker. 
-            Collaborate cross functionally using Agile, implementing best practices from ITIL 
-            and OWASP to ensure robust security and swift incident resolution.
+            Primary technical support contact for hybrid live-streaming educational technology, assisting teaching staff and students while facilitating stakeholder communication and driving continuous improvement initiatives.
           </p>
           <span class="exp-toggle">
-            Expand Details 
-            <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
           </span>
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
           <p>
             <ul>
-              <li><code>• Enforce OWASP ASVS standards (authentication, encryption, secure session management)</code></li>
-              <li><code>• Integrate Docker based CI/CD pipelines for consistent testing and faster deployments</code></li>
-              <li><code>• Collaborate with UI/UX to refine designs, ensuring accessibility & performance</code></li>
-              <li><code>• Maintain detailed documentation for continuous improvement and onboarding</code></li>
+              <li><code>• Managed hybrid live-streaming technology systems</code></li>
+              <li><code>• Provided proactive technical issue resolution</code></li>
+              <li><code>• Facilitated cross-functional stakeholder communication</code></li>
+              <li><code>• Coordinated session management and quality assurance</code></li>
+              <li><code>• Enhanced teaching experience through technical innovation</code></li>
+              <li><code>• Contributed to continuous improvement initiatives</code></li>
+            </ul>
+          </p>
+          <div class="exp-resources">
+            <a href="https://www.deakin.edu.au/" target="_blank">Deakin University</a>
+            <a href="https://experts.deakin.edu.au/69604-dave-nair" target="_blank">Staff Profile</a>
+            <a href="https://www.atlassian.com/itsm/itil" target="_blank">Technical Support</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Experience Card 2: Junior Web Developer -->
+      <div class="exp-card">
+        <img src="/DaveNair1.github.io/static/images/software-developer-6521720_1280.jpg" alt="Junior Web Developer Image" class="exp-image" />
+        <div class="exp-content">
+          <h3>Junior Web Developer - C4 Engineering</h3>
+          <p>
+            Currently spearheading secure, scalable web apps with Django, HTML/HTMX, Tailwind CSS, Alpine.js, and Docker at C4 Engineering. Collaborate cross functionally using Agile, ITIL, and OWASP best practices.
+          </p>
+          <span class="exp-toggle">
+            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="exp-details" style="padding-bottom: 20px;">
+          <p>
+            <ul>
+              <li><code>• Enforce OWASP ASVS standards</code></li>
+              <li><code>• Integrate Docker CI/CD pipelines</code></li>
+              <li><code>• Collaborate on UI/UX design</code></li>
+              <li><code>• Maintain detailed documentation</code></li>
+              <li><code>• Reduced vulnerabilities by 30%</code></li>
             </ul>
           </p>
           <div class="exp-resources">
@@ -945,30 +1956,26 @@
         </div>
       </div>
 
-      <!-- Card 2 -->
+      <!-- Experience Card 3: Frontend Developer Intern -->
       <div class="exp-card">
-        <img 
-          src="/static/images/programming-1873854_1280.png" 
-          alt="Intern Developer Image" 
-          class="exp-image"
-        />
+        <img src="/DaveNair1.github.io/static/images/programming-1873854_1280.png" alt="Intern Developer Image" class="exp-image" />
         <div class="exp-content">
-          <h3>Frontend Developer Intern</h3>
+          <h3>Frontend Developer Intern - C4 Engineering</h3>
           <p>
-            Contributed to UI/UX enhancements by developing a robust design system focused on typography, spacing, and colour palettes that ensured visual consistency and streamlined design processes. Created a landing page that significantly boosted user engagement.
+            Contributed to UI/UX enhancements at C4 Engineering by developing a robust design system and landing page that boosted user engagement by 25% and development efficiency by 20%.
           </p>
           <span class="exp-toggle">
-            Expand Details 
-            <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
           </span>
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
           <p>
             <ul>
-              <li><code>• Crafted reusable components (e.g. modals, nav bars) for rapid feature development</code></li>
-              <li><code>• Streamlined sign-in UX, improving accessibility (WCAG guidelines) & mobile responsiveness</code></li>
-              <li><code>• Used Jira to manage tasks, track progress, and communicate with cross-functional teams</code></li>
-              <li><code>• Ensured code quality through peer reviews and Git version control best practices</code></li>
+              <li><code>• Crafted reusable UI components</code></li>
+              <li><code>• Improved sign-in UX flow</code></li>
+              <li><code>• Managed tasks with Jira</code></li>
+              <li><code>• Ensured 100% security compliance</code></li>
+              <li><code>• Resolved 20+ technical issues</code></li>
             </ul>
           </p>
           <div class="exp-resources">
@@ -977,21 +1984,50 @@
           </div>
         </div>
       </div>
+      
+      <!-- Experience Card 4: MOP-Code Project -->
+      <div class="exp-card">
+        <img src="/DaveNair1.github.io/static/images/melbourne-5076478_1280.jpg" alt="MOP-Code Project Image" class="exp-image" />
+        <div class="exp-content">
+          <h3>Frontend Developer - Chameleon MOP</h3>
+          <p>
+            Contributed to the Melbourne Open Data (MOP) project at Deakin University in collaboration with Chameleon Company, implementing advanced frontend features with React, TypeScript, and TailwindCSS.
+          </p>
+          <span class="exp-toggle">
+            Expand Details <i class="fa fa-caret-down icon-toggle" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="exp-details" style="padding-bottom: 20px;">
+          <p>
+            <ul>
+              <li><code>• Use Case Page Redesign</code></li>
+              <li><code>• Chatbot Voice Feature Implementation</code></li>
+              <li><code>• UI/UX Enhancements</code></li>
+              <li><code>• Client Presentation Delivery</code></li>
+            </ul>
+          </p>
+          <div class="exp-resources">
+            <a href="https://github.com/Chameleon-company/MOP-Code" target="_blank"><i class="fa fa-github"></i> MOP-Code Repository</a>
+            <a href="https://youtu.be/l9xCXAQsmfQ" target="_blank">Chatbot Demo Video</a>
+            <a href="https://melbourne-open-playground.vercel.app" target="_blank">Live Demo</a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- RESUME SECTION -->
-  <section id="resume" class="section">
+  <!-- RETRO RESUME SECTION -->
+  <section id="resume" class="section fade-in">
     <h2 class="section-title"><code>Download Resume</code></h2>
-    <div class="resume-download" style="text-align: center;">
-      <a href="/static/docs/Dave Nair Resume.pdf" download>
-        <img src="/static/images/file-arrow-down-solid.svg" alt="Download Resume" style="width: 4rem; height: 4rem;">
+    <div class="resume-download">
+      <a href="/DaveNair1.github.io/static/docs/Dave Nair Portfolio Resume.pdf" download>
+        <img src="/DaveNair1.github.io/static/images/file-arrow-down-solid.svg" alt="Download Resume">
       </a>
     </div>
   </section>
 
-  <!-- CONTACT SECTION -->
-  <section id="contact" class="section">
+  <!-- RETRO CONTACT SECTION -->
+  <section id="contact" class="section fade-in">
     <h2 class="section-title"><code>Let's Connect</code></h2>
     <div class="contact-container">
       <div class="contact-links">
@@ -1009,31 +2045,64 @@
     </div>
   </section>
 
-  <!-- UP ARROW (scroll to top) -->
-  <div class="up-arrow">
+  <!-- Retro UP ARROW -->
+  <div class="up-arrow fade-in">
     <a href="#hero">
-      <i class="fa fa-arrow-up" style="color: #5d5d5d;"></i>
+      <i class="fa fa-arrow-up"></i>
     </a>
   </div>
 
-  <!-- FOOTER -->
+  <!-- RETRO FOOTER -->
   <footer>
     <p><code>&copy; 2025 DAVE NAIR - All Rights Reserved.</code></p>
     <div id="user-ip"><code>Loading location and weather...</code></div>
   </footer>
 
-  <!-- Snake Game Modal Overlay -->
+  <!-- Enhanced PC Off Screen: 3D Model Display -->
+  <div id="pcOffScreen">
+    <div class="pcOffContent">
+      <div class="message">
+        Oops, system turned off. Turn it on?
+      </div>
+      <button class="powerBtn" id="powerButton">Power On</button>
+      <canvas id="pcCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Enhanced Retro Snake Game Modal -->
   <div id="snakeModal">
     <div class="modal-header">
-      <h2>Snake Game</h2>
-      <span class="close-modal" id="closeSnakeModal">X</span>
+      <h2>RETRO SNAKE</h2>
+      <span class="close-modal" id="closeSnakeModal">×</span>
     </div>
     <div class="modal-content">
-
       <div id="notif"></div>
-      <div id="scoreDisplay">Score: 0</div>
+      
+      <!-- Snake Game Music Control -->
+      <div class="snake-music-control">
+        <button class="snake-mute-btn" id="snakeMuteBtn">
+          <i class="fa fa-volume-up"></i> MUTE
+        </button>
+      </div>
+      
+      <!-- Game Statistics Display -->
+      <div class="game-stats">
+        <div class="stat-item">
+          <span class="stat-label">SCORE</span>
+          <span class="stat-value" id="currentScore">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">HIGH SCORE</span>
+          <span class="stat-value" id="highScore">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">TIME</span>
+          <span class="stat-value" id="gameTime">00:00</span>
+        </div>
+      </div>
+      
       <canvas id="snakeCanvas" width="300" height="300"></canvas>
-      <div class="instructions" style="text-align: center;">Use WASD or Arrow keys to control the snake. On mobile, swipe or use the buttons below.</div>
+      <div class="instructions">Use WASD or Arrow keys to control the snake. On mobile, swipe or use the buttons below.</div>
       <div class="mobile-controls">
         <button data-dir="up">↑</button>
         <button data-dir="left">←</button>
@@ -1044,13 +2113,390 @@
     </div>
   </div>
 
-  <!-- Audio Elements 4 Sounds -->
-  <audio id="eatSound" src="sounds/eat.mp3" preload="auto"></audio>
-  <audio id="gameOverSound" src="sounds/gameover.mp3" preload="auto"></audio>
-  <audio id="restartSound" src="sounds/restart.mp3" preload="auto"></audio>
+  <!-- Retro Music Controller -->
+  <div class="music-controller" id="musicController">
+    <!-- Minimized Music Icon -->
+    <div class="music-icon" id="musicIcon">
+      <i class="fa fa-music"></i>
+    </div>
+    
+    <!-- Full Music Controller Content -->
+    <div class="music-content" id="musicContent">
+      <div class="music-header">
+        <span>♪ NOW PLAYING</span>
+        <span class="music-minimize" id="musicMinimize">_</span>
+      </div>
+      <div class="track-info">
+        <div class="track-title" id="trackTitle">Retro Synthwave</div>
+      </div>
+      <div class="visualizer" id="visualizer">
+        <!-- Audio visualization bars will be inserted here -->
+      </div>
+      <div class="music-controls">
+        <button class="control-btn" id="playPauseBtn">
+          <i class="fa fa-play"></i>
+        </button>
+        <button class="control-btn" id="muteBtn">
+          <i class="fa fa-volume-up"></i>
+        </button>
+      </div>
+      <div class="volume-control">
+        <i class="fa fa-volume-down"></i>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
+        <i class="fa fa-volume-up"></i>
+      </div>
+      <button class="track-switch" id="trackSwitch">Switch to Lo-Fi</button>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <!-- Main page music -->
+  <audio id="synthwaveAudio" loop preload="auto">
+    <source src="/DaveNair1.github.io/static/audio/retro-synthwave-background-soundtrack-341853.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="lofiAudio" loop preload="auto">
+    <source src="/DaveNair1.github.io/static/audio/lofi-lofi-song-345371.mp3" type="audio/mpeg">
+  </audio>
+  
+  <!-- Snake game audio -->
+  <audio id="snakeGameAudio" loop preload="auto">
+    <source src="/DaveNair1.github.io/static/audio/retro-game-arcade-236133.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="eatSound" preload="auto">
+    <source src="/DaveNair1.github.io/static/audio/point-smooth-beep-230573.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="gameOverSound" preload="auto">
+    <source src="/DaveNair1.github.io/static/audio/game-over-arcade-6435.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    // Scroll Progress Bar 
+    // ===== Music System Variables =====
+    let currentMainAudio = null;
+    let currentTrack = 'synthwave';
+    let mainAudioMuted = false;
+    let snakeAudioMuted = false;
+    let audioContext;
+    let analyser;
+    let dataArray;
+    let isVisualizerActive = false;
+    let wasPlayingBeforeSnake = false; // Track if music was playing before snake game
+    let wasPlayingBeforePowerOff = false; // Track if music was playing before power off
+    let hasUserInteracted = false; // Track if user has interacted with the page
+
+    // ===== Game State Variables =====
+    let highScore = 0;
+    let gameStartTime = 0;
+    let gameTimer = null;
+
+    // ===== Audio Initialization =====
+    function initializeAudio() {
+      const synthwaveAudio = document.getElementById('synthwaveAudio');
+      const lofiAudio = document.getElementById('lofiAudio');
+      
+      // Set volume levels
+      synthwaveAudio.volume = 0.7;
+      lofiAudio.volume = 0.7;
+      
+      // Set current audio
+      currentMainAudio = synthwaveAudio;
+      
+      // Initialize Web Audio API for visualization
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 64;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        
+        const source = audioContext.createMediaElementSource(currentMainAudio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+      }
+    }
+
+    // ===== Music Controller Functions =====
+    function showMusicController() {
+      const controller = document.getElementById('musicController');
+      setTimeout(() => {
+        controller.classList.add('visible');
+        // Start minimized
+        controller.classList.add('minimized');
+        document.getElementById('musicMinimize').textContent = '□';
+        
+        // Auto-start music when controller appears
+        autoStartMusic();
+      }, 2000); // Show after 2 seconds
+    }
+
+    function autoStartMusic() {
+      if (!currentMainAudio) return;
+      
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      
+      // Try to auto-start the music
+      currentMainAudio.play().then(() => {
+        playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
+        playPauseBtn.classList.add('active');
+        wasPlayingBeforeSnake = true; // Set as playing
+        wasPlayingBeforePowerOff = true; // Set power off state
+        hasUserInteracted = true; // Mark that music is now playing
+        if (!isVisualizerActive) {
+          startVisualizer();
+        }
+      }).catch(err => {
+        console.log('Auto-play prevented by browser policy, waiting for user interaction');
+        // Keep play button showing, music will start on first user interaction
+        wasPlayingBeforeSnake = false;
+        wasPlayingBeforePowerOff = false;
+      });
+    }
+
+    function tryStartMusicOnInteraction() {
+      if (!hasUserInteracted && currentMainAudio && currentMainAudio.paused && !mainAudioMuted) {
+        autoStartMusic();
+      }
+    }
+
+    function togglePlay() {
+      if (!currentMainAudio) return;
+      
+      hasUserInteracted = true; // Mark that user has interacted
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      
+      if (currentMainAudio.paused) {
+        // Resume audio context if needed
+        if (audioContext && audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        
+        currentMainAudio.play().then(() => {
+          playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
+          playPauseBtn.classList.add('active');
+          wasPlayingBeforeSnake = true; // Update playing state
+          wasPlayingBeforePowerOff = true; // Update power off state
+          if (!isVisualizerActive) {
+            startVisualizer();
+          }
+        }).catch(err => {
+          console.log('Audio play failed:', err);
+        });
+      } else {
+        currentMainAudio.pause();
+        playPauseBtn.innerHTML = '<i class="fa fa-play"></i>';
+        playPauseBtn.classList.remove('active');
+        wasPlayingBeforeSnake = false; // Update playing state
+        wasPlayingBeforePowerOff = false; // Update power off state
+        stopVisualizer();
+      }
+    }
+
+    function toggleMute() {
+      if (!currentMainAudio) return;
+      
+      const muteBtn = document.getElementById('muteBtn');
+      mainAudioMuted = !mainAudioMuted;
+      currentMainAudio.muted = mainAudioMuted;
+      
+      if (mainAudioMuted) {
+        muteBtn.innerHTML = '<i class="fa fa-volume-off"></i>';
+        muteBtn.classList.add('active');
+      } else {
+        muteBtn.innerHTML = '<i class="fa fa-volume-up"></i>';
+        muteBtn.classList.remove('active');
+      }
+    }
+
+    function changeVolume(volume) {
+      if (!currentMainAudio) return;
+      currentMainAudio.volume = volume / 100;
+    }
+
+    function switchTrack() {
+      const synthwaveAudio = document.getElementById('synthwaveAudio');
+      const lofiAudio = document.getElementById('lofiAudio');
+      const trackTitle = document.getElementById('trackTitle');
+      const trackSwitch = document.getElementById('trackSwitch');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      
+      const wasPlaying = !currentMainAudio.paused;
+      const currentTime = currentMainAudio.currentTime;
+      
+      // Pause current track
+      currentMainAudio.pause();
+      
+      // Switch tracks
+      if (currentTrack === 'synthwave') {
+        currentMainAudio = lofiAudio;
+        currentTrack = 'lofi';
+        trackTitle.textContent = 'Lo-Fi Chill';
+        trackSwitch.textContent = 'Switch to Synthwave';
+      } else {
+        currentMainAudio = synthwaveAudio;
+        currentTrack = 'synthwave';
+        trackTitle.textContent = 'Retro Synthwave';
+        trackSwitch.textContent = 'Switch to Lo-Fi';
+      }
+      
+      // Apply current settings to new track
+      currentMainAudio.volume = document.getElementById('volumeSlider').value / 100;
+      currentMainAudio.muted = mainAudioMuted;
+      
+      // Resume if was playing
+      if (wasPlaying) {
+        currentMainAudio.play().then(() => {
+          playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
+          playPauseBtn.classList.add('active');
+          wasPlayingBeforeSnake = true; // Update playing state
+          wasPlayingBeforePowerOff = true; // Update power off state
+        });
+      } else {
+        wasPlayingBeforeSnake = false; // Update playing state
+        wasPlayingBeforePowerOff = false; // Update power off state
+      }
+      
+      // Update Web Audio API source
+      if (audioContext) {
+        try {
+          const source = audioContext.createMediaElementSource(currentMainAudio);
+          source.connect(analyser);
+          analyser.connect(audioContext.destination);
+        } catch (err) {
+          // Source already exists, that's okay
+        }
+      }
+    }
+
+    // ===== Audio Visualizer Functions =====
+    function createVisualizerBars() {
+      const visualizer = document.getElementById('visualizer');
+      visualizer.innerHTML = '';
+      
+      for (let i = 0; i < 24; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        visualizer.appendChild(bar);
+      }
+    }
+
+    function startVisualizer() {
+      if (!analyser || !dataArray) return;
+      
+      isVisualizerActive = true;
+      const bars = document.querySelectorAll('.visualizer .bar');
+      
+      function animate() {
+        if (!isVisualizerActive) return;
+        
+        analyser.getByteFrequencyData(dataArray);
+        
+        for (let i = 0; i < bars.length; i++) {
+          const barHeight = (dataArray[i] / 255) * 30 + 2; // Scale to 2-32px
+          bars[i].style.height = barHeight + 'px';
+        }
+        
+        requestAnimationFrame(animate);
+      }
+      
+      animate();
+    }
+
+    function stopVisualizer() {
+      isVisualizerActive = false;
+      const bars = document.querySelectorAll('.visualizer .bar');
+      bars.forEach(bar => {
+        bar.style.height = '2px';
+      });
+    }
+
+    function minimizeController() {
+      const controller = document.getElementById('musicController');
+      const minimizeBtn = document.getElementById('musicMinimize');
+      
+      if (controller.classList.contains('minimized')) {
+        // Expand the controller
+        controller.classList.remove('minimized');
+        minimizeBtn.textContent = '_';
+      } else {
+        // Minimize the controller
+        controller.classList.add('minimized');
+        minimizeBtn.textContent = '□';
+      }
+    }
+
+    function expandController() {
+      const controller = document.getElementById('musicController');
+      const minimizeBtn = document.getElementById('musicMinimize');
+      
+      if (controller.classList.contains('minimized')) {
+        controller.classList.remove('minimized');
+        minimizeBtn.textContent = '_';
+      }
+    }
+
+    // ===== Snake Game Audio Functions =====
+    function toggleSnakeMute() {
+      const snakeGameAudio = document.getElementById('snakeGameAudio');
+      const snakeMuteBtn = document.getElementById('snakeMuteBtn');
+      
+      snakeAudioMuted = !snakeAudioMuted;
+      snakeGameAudio.muted = snakeAudioMuted;
+      
+      if (snakeAudioMuted) {
+        snakeMuteBtn.innerHTML = '<i class="fa fa-volume-off"></i> UNMUTE';
+        snakeMuteBtn.classList.add('muted');
+      } else {
+        snakeMuteBtn.innerHTML = '<i class="fa fa-volume-up"></i> MUTE';
+        snakeMuteBtn.classList.remove('muted');
+      }
+    }
+
+    function startSnakeAudio() {
+      const snakeGameAudio = document.getElementById('snakeGameAudio');
+      snakeGameAudio.volume = 0.6;
+      snakeGameAudio.muted = snakeAudioMuted;
+      snakeGameAudio.play().catch(err => {
+        console.log('Snake audio play failed:', err);
+      });
+    }
+
+    function stopSnakeAudio() {
+      const snakeGameAudio = document.getElementById('snakeGameAudio');
+      snakeGameAudio.pause();
+      snakeGameAudio.currentTime = 0;
+    }
+
+    function playSound(soundId) {
+      const sound = document.getElementById(soundId);
+      if (sound && !snakeAudioMuted) {
+        sound.currentTime = 0;
+        sound.volume = 0.5;
+        sound.play().catch(err => {
+          console.log('Sound play failed:', err);
+        });
+      }
+    }
+
+    function playGameOverSequence() {
+      if (!snakeAudioMuted) {
+        // Stop game music first
+        stopSnakeAudio();
+        
+        // Play game over sound
+        const gameOverSound = document.getElementById('gameOverSound');
+        gameOverSound.volume = 0.7;
+        gameOverSound.play().catch(err => {
+          console.log('Game over sound play failed:', err);
+        });
+        
+        // Restart game music after game over sound ends
+        gameOverSound.addEventListener('ended', () => {
+          setTimeout(() => {
+            startSnakeAudio();
+          }, 1000);
+        }, { once: true });
+      }
+    }
+
+    // ===== Retro Scroll Progress Bar =====
     window.addEventListener('scroll', () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -1058,80 +2504,64 @@
       document.getElementById('progress-bar').style.width = progress + '%';
     });
 
-    // Progress Bar with Dots 
-    const terminal = document.getElementById('terminal');
-    let terminalFinished = false;
-    function simulateProgressBar() {
-      const progressWrapper = document.createElement('div');
-      progressWrapper.className = 'install-progress-wrapper';
+    // ===== Retro Floating Particles =====
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 30;
       
-      const progressTitle = document.createElement('div');
-      progressTitle.className = 'install-progress-title';
-      progressTitle.textContent = "> Retrieving info";
-      progressWrapper.appendChild(progressTitle);
-      
-      const progressContainer = document.createElement('div');
-      progressContainer.className = 'install-progress-container';
-      
-      const progressBar = document.createElement('div');
-      progressBar.className = 'install-progress-bar';
-      progressContainer.appendChild(progressBar);
-      progressWrapper.appendChild(progressContainer);
-      
-      terminal.appendChild(progressWrapper);
-      
-      let dotCount = 0;
-      const maxDots = 3;
-      const dotsInterval = setInterval(() => {
-        dotCount = (dotCount + 1) % (maxDots + 1);
-        let dots = ".".repeat(dotCount);
-        progressTitle.textContent = "> Retrieving info" + dots;
-      }, 500);
-      
-      let width = 0;
-      const progressInterval = setInterval(() => {
-        if (width >= 100) {
-          clearInterval(progressInterval);
-          clearInterval(dotsInterval);
-          terminal.removeChild(progressWrapper);
-          type();
-        } else {
-          width++;
-          progressBar.style.width = width + '%';
-        }
-      }, 30);
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+        particlesContainer.appendChild(particle);
+      }
     }
 
-    document.querySelectorAll('nav a, .scroll-link, .hero-down a, .up-arrow a').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href');
-        if (href && href.startsWith('#')) {
-          e.preventDefault();
-          const target = document.querySelector(href);
-          if (target) {
-            window.scrollTo({
-              top: target.offsetTop - 60,
-              behavior: 'smooth'
-            });
+    // ===== Retro Scroll Animations =====
+    function handleScrollAnimations() {
+      const elements = document.querySelectorAll('.fade-in');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
           }
-        }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -30px 0px'
       });
-    });
 
-    /* Typewriter Effect */
+      elements.forEach(element => {
+        observer.observe(element);
+      });
+    }
+
+    // ----- Retro Terminal Typewriter Effect -----
+    const terminal = document.getElementById('terminal');
+    let terminalFinished = false;
+    let progressElements = []; // Track progress elements for cleanup
     const lines = [
       "> Jr. Web Developer @ C4 Engineering",
-      "> Building secure, scalable, and efficient web solutions",
+      "> Sessional Academic @ Deakin University", 
+      "> Building secure, scalable, and compliant web solutions",
+      "",
       "> Press S to play snake game or press "
     ];
     let lineIndex = 0;
     let charIndex = 0;
     const typingDelay = 50;
     const lineDelay = 500;
-
+    
     function type() {
-      terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
+      // Check if terminal is still visible before proceeding
+      if (document.getElementById('retro-screen').style.display === 'none') {
+        return;
+      }
       
+      terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
       if (lineIndex < lines.length) {
         if (charIndex < lines[lineIndex].length) {
           terminal.innerHTML += lines[lineIndex].charAt(charIndex);
@@ -1141,7 +2571,6 @@
         } else {
           terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
           if (lineIndex === lines.length - 1) {
-            // Append the launch button inline
             terminal.innerHTML += '<button id="launchGame">LAUNCH GAME</button>\n';
           } else {
             terminal.innerHTML += "\n";
@@ -1154,37 +2583,126 @@
       } else {
         document.getElementById('resetTerminal').style.display = 'block';
         terminalFinished = true;
-        
         const launchButton = document.getElementById('launchGame');
         if (launchButton) {
           launchButton.addEventListener('click', openSnakeModal);
         }
       }
     }
-
-    window.addEventListener('load', simulateProgressBar);
-
-    // Reset 
+    
+    function simulateProgressBar() {
+      // Clean up any existing progress elements first
+      progressElements.forEach(element => {
+        if (element && element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      progressElements = [];
+      
+      const progressWrapper = document.createElement('div');
+      progressWrapper.className = 'install-progress-wrapper';
+      progressElements.push(progressWrapper);
+      
+      const progressTitle = document.createElement('div');
+      progressTitle.className = 'install-progress-title';
+      progressTitle.textContent = "> Retrieving info";
+      progressWrapper.appendChild(progressTitle);
+      
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'install-progress-container';
+      const progressBar = document.createElement('div');
+      progressBar.className = 'install-progress-bar';
+      progressContainer.appendChild(progressBar);
+      progressWrapper.appendChild(progressContainer);
+      
+      // Only append if terminal exists and is empty
+      if (terminal && terminal.innerHTML.trim() === '') {
+        terminal.appendChild(progressWrapper);
+      }
+      
+      let dotCount = 0;
+      const maxDots = 3;
+      const dotsInterval = setInterval(() => {
+        dotCount = (dotCount + 1) % (maxDots + 1);
+        let dots = ".".repeat(dotCount);
+        if (progressTitle) {
+          progressTitle.textContent = "> Retrieving info" + dots;
+        }
+      }, 500);
+      
+      let width = 0;
+      const progressInterval = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(progressInterval);
+          clearInterval(dotsInterval);
+          // Remove progress bar before starting typewriter
+          if (progressWrapper && progressWrapper.parentNode) {
+            progressWrapper.parentNode.removeChild(progressWrapper);
+          }
+          progressElements = progressElements.filter(el => el !== progressWrapper);
+          // Only start typing if terminal is still visible
+          if (document.getElementById('retro-screen').style.display !== 'none') {
+            type();
+          }
+        } else {
+          width++;
+          if (progressBar) {
+            progressBar.style.width = width + '%';
+          }
+        }
+      }, 30);
+    }
+    
+    window.addEventListener('load', () => {
+      simulateProgressBar();
+      createParticles();
+      handleScrollAnimations();
+      initializeAudio();
+      showMusicController();
+      createVisualizerBars();
+    });
+    
     const resetBtn = document.getElementById('resetTerminal');
     function reinitializeTerminal() {
+      // Clear terminal content and reset state completely
       terminal.innerHTML = "";
+      
+      // Clean up any existing progress elements
+      progressElements.forEach(element => {
+        if (element && element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      progressElements = [];
+      
+      // Reset all terminal state variables
       lineIndex = 0;
       charIndex = 0;
       terminalFinished = false;
+      
+      // Hide reset button
       document.getElementById('resetTerminal').style.display = 'none';
-      simulateProgressBar();
+      
+      // Remove any existing event listeners to prevent duplicates
+      const oldLaunchButton = document.getElementById('launchGame');
+      if (oldLaunchButton) {
+        oldLaunchButton.remove();
+      }
+      
+      // Start fresh simulation after a brief delay to ensure clean state
+      setTimeout(() => {
+        simulateProgressBar();
+      }, 100);
     }
     resetBtn.addEventListener('click', reinitializeTerminal);
-
-    // ----- Global key listener for starting the snake game -----
-    // Fixed: Check if the snake modal is not already open.
+    
     document.addEventListener('keydown', (e) => {
       if (terminalFinished && e.key.toLowerCase() === 's' && document.getElementById('snakeModal').style.display !== 'block') {
         openSnakeModal();
       }
     });
 
-    // ----- Expand/Collapse Logic for Details -----
+    // ----- Retro Expand/Collapse for Skill & Experience Details -----
     function expandSection(element) {
       const sectionHeight = element.scrollHeight;
       element.style.maxHeight = sectionHeight + 'px';
@@ -1194,6 +2712,7 @@
       element.style.maxHeight = '0';
       element.style.opacity = '0';
     }
+    
     document.querySelectorAll('.skill-toggle').forEach((toggle, index) => {
       const detail = document.querySelectorAll('.skill-details')[index];
       toggle.addEventListener('click', () => {
@@ -1206,6 +2725,7 @@
         }
       });
     });
+    
     document.querySelectorAll('.exp-toggle').forEach((toggle, index) => {
       const detail = document.querySelectorAll('.exp-details')[index];
       toggle.addEventListener('click', () => {
@@ -1219,11 +2739,104 @@
       });
     });
 
-    // ----- Hamburger Menu Toggle -----
+    // ===== Enhanced Theme Toggle Functionality =====
+    let currentTheme = 'dark'; // Default theme
+    
+    function updateSVGColors() {
+      const heroText = document.getElementById('heroText');
+      if (heroText) {
+        const computedStyle = getComputedStyle(document.documentElement);
+        const greenColor = computedStyle.getPropertyValue('--terminal-green-light').trim() || '#00ff41';
+        heroText.setAttribute('stroke', greenColor);
+      }
+    }
+    
+    function updateThemeToggleIcon() {
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        if (currentTheme === 'dark') {
+          themeToggle.innerHTML = '<i class="fa fa-sun-o"></i>';
+        } else {
+          themeToggle.innerHTML = '<i class="fa fa-moon-o"></i>';
+        }
+      }
+    }
+    
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.body.setAttribute('data-theme', theme);
+      currentTheme = theme;
+      updateThemeToggleIcon();
+      setTimeout(updateSVGColors, 100);
+    }
+    
+    function toggleTheme() {
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+    }
+    
+    // Initialize theme immediately
+    applyTheme('dark');
+    
+    // Setup event listeners when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // Re-apply theme to ensure it's set
+      applyTheme(currentTheme);
+      
+      // Add click event to theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+        // Also add keyboard support
+        themeToggle.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleTheme();
+          }
+        });
+      }
+
+      // Music controller event listeners
+      document.getElementById('playPauseBtn').addEventListener('click', togglePlay);
+      document.getElementById('muteBtn').addEventListener('click', toggleMute);
+      document.getElementById('volumeSlider').addEventListener('input', (e) => {
+        changeVolume(e.target.value);
+      });
+      document.getElementById('trackSwitch').addEventListener('click', switchTrack);
+      document.getElementById('musicMinimize').addEventListener('click', minimizeController);
+      document.getElementById('musicIcon').addEventListener('click', expandController);
+      
+      // Snake game mute button
+      document.getElementById('snakeMuteBtn').addEventListener('click', toggleSnakeMute);
+    });
+    
+    // Backup initialization on window load
+    window.addEventListener('load', () => {
+      applyTheme(currentTheme);
+    });
+
+    // ===== Retro Hamburger Menu Toggle =====
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
+    hamburger.addEventListener('click', () => { 
+      navLinks.classList.toggle('active'); 
+      hamburger.style.transform = navLinks.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+    });
+
+    // ----- Retro Smooth Scrolling for Navigation -----
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          navLinks.classList.remove('active');
+          hamburger.style.transform = 'rotate(0deg)';
+        }
+      });
     });
 
     // ----- Fetch and display user's location and weather -----
@@ -1241,132 +2854,258 @@
         document.getElementById('user-ip').textContent = 'Location and weather unavailable';
       });
 
-    /* ===== Snake Game Code ===== */
+    /* ===== Retro Terminal Window Controls to Trigger PC Off Screen ===== */
+    function showPcOffScreen() {
+      document.getElementById('retro-screen').style.display = 'none';
+      document.getElementById('pcOffScreen').style.display = 'block';
+      
+      // Pause main music when PC is turned off
+      pauseMusicForPowerOff();
+      
+      loadPCModel();
+    }
+    
+    function showTerminal() {
+      document.getElementById('pcOffScreen').style.display = 'none';
+      document.getElementById('retro-screen').style.display = 'block';
+      
+      // Resume main music when PC is turned back on
+      resumeMusicFromPowerOff();
+      
+      reinitializeTerminal();
+    }
+
+    function pauseMusicForPowerOff() {
+      if (!currentMainAudio) return;
+      
+      // Remember if music was playing before power off
+      wasPlayingBeforePowerOff = !currentMainAudio.paused;
+      
+      if (!currentMainAudio.paused) {
+        currentMainAudio.pause();
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        playPauseBtn.innerHTML = '<i class="fa fa-play"></i>';
+        playPauseBtn.classList.remove('active');
+        stopVisualizer();
+      }
+    }
+
+    function resumeMusicFromPowerOff() {
+      if (!currentMainAudio || !wasPlayingBeforePowerOff || mainAudioMuted) return;
+      
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      
+      // Reset music to start from beginning
+      currentMainAudio.currentTime = 0;
+      
+      currentMainAudio.play().then(() => {
+        playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
+        playPauseBtn.classList.add('active');
+        wasPlayingBeforeSnake = true;
+        if (!isVisualizerActive) {
+          startVisualizer();
+        }
+      }).catch(err => {
+        console.log('Resume music after power on failed:', err);
+      });
+    }
+    document.getElementById('macClose').addEventListener('click', showPcOffScreen);
+    document.getElementById('macMinimize').addEventListener('click', showPcOffScreen);
+
+    /* ===== Retro PC Off Screen (3D Model) Setup ===== */
+    let pcScene, pcCamera, pcRenderer, pcModel, pcAnimationId;
+    let pcModelLoaded = false;
+    function loadPCModel() {
+      if (pcModelLoaded) return;
+      const canvasPC = document.getElementById('pcCanvas');
+      pcRenderer = new THREE.WebGLRenderer({ canvas: canvasPC, antialias: true });
+      pcRenderer.setSize(canvasPC.offsetWidth, canvasPC.offsetHeight);
+      pcScene = new THREE.Scene();
+      pcScene.background = new THREE.Color(0x0a0a0a);
+      pcCamera = new THREE.PerspectiveCamera(45, canvasPC.offsetWidth / canvasPC.offsetHeight, 0.1, 1000);
+      pcCamera.position.set(0, 1.5, 3);
+      
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      pcScene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(0, 5, 5);
+      pcScene.add(directionalLight);
+      
+      const loader = new THREE.GLTFLoader();
+      loader.load('scene.gltf', function(gltf) {
+        pcModel = gltf.scene;
+        pcModel.scale.set(0.8, 0.8, 0.8);
+        pcScene.add(pcModel);
+        animatePC();
+        pcModelLoaded = true;
+      }, undefined, function(error) {
+        console.error('Error loading model:', error);
+      });
+    }
+    function animatePC() {
+      pcAnimationId = requestAnimationFrame(animatePC);
+      if (pcModel) { pcModel.rotation.y += 0.005; }
+      pcRenderer.render(pcScene, pcCamera);
+    }
+    document.getElementById('powerButton').addEventListener('click', function() {
+      cancelAnimationFrame(pcAnimationId);
+      showTerminal();
+    });
+
+    /* ===== Enhanced Retro Snake Game Code ===== */
     let snakeAnimationFrame;
-    let lastTime = 0;
-    let gameRunning = false; // Flag to control game loop
-    let snakeSpeed = 120; // in ms
-
+    let lastTimeSnake = 0;
+    let gameRunning = false;
+    let snakeSpeed = 120;
     let snake, food, direction, nextDirection, score;
-    const canvas = document.getElementById('snakeCanvas');
-    const ctx = canvas.getContext('2d');
-    const cellSize = 15;
-    const gridWidth = canvas.width / cellSize;  // 20 cells
-    const gridHeight = canvas.height / cellSize; // 20 cells
-
+    const canvasSnake = document.getElementById('snakeCanvas');
+    const ctxSnake = canvasSnake.getContext('2d');
+    const cellSizeSnake = 15;
+    const gridWidth = canvasSnake.width / cellSizeSnake;
+    const gridHeight = canvasSnake.height / cellSizeSnake;
+    
+    // ===== Game Timer Functions =====
+    function startGameTimer() {
+      gameStartTime = Date.now();
+      gameTimer = setInterval(() => {
+        if (gameRunning) {
+          const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+          const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+          const seconds = (elapsed % 60).toString().padStart(2, '0');
+          document.getElementById('gameTime').textContent = `${minutes}:${seconds}`;
+        }
+      }, 1000);
+    }
+    
+    function stopGameTimer() {
+      if (gameTimer) {
+        clearInterval(gameTimer);
+        gameTimer = null;
+      }
+    }
+    
+    function resetGameTimer() {
+      document.getElementById('gameTime').textContent = '00:00';
+    }
+    
+    function updateHighScore() {
+      if (score > highScore) {
+        highScore = score;
+        document.getElementById('highScore').textContent = highScore;
+      }
+    }
+    
     function startSnakeGame() {
       snake = [{ x: 10, y: 10 }];
       direction = 'right';
       nextDirection = 'right';
       score = 0;
       updateScore();
-
+      resetGameTimer();
       document.getElementById('notif').style.display = 'none';
       document.getElementById('restartSnakeButton').style.display = 'none';
       placeFood();
-      // Remove previous keydown listener before adding a new one.
       document.removeEventListener('keydown', handleKeyDown);
       document.addEventListener('keydown', handleKeyDown);
-      lastTime = 0;
+      lastTimeSnake = 0;
       gameRunning = true;
+      startGameTimer();
+      startSnakeAudio(); // Start snake game music
       snakeAnimationFrame = requestAnimationFrame(gameLoop);
     }
-
+    
     function gameLoop(timestamp) {
       if (!gameRunning) return;
-      if (!lastTime) lastTime = timestamp;
-      const delta = timestamp - lastTime;
+      if (!lastTimeSnake) lastTimeSnake = timestamp;
+      const delta = timestamp - lastTimeSnake;
       if (delta > snakeSpeed) {
         updateSnakeGame();
-        lastTime = timestamp;
+        lastTimeSnake = timestamp;
       }
-      if (gameRunning) {
-        snakeAnimationFrame = requestAnimationFrame(gameLoop);
-      }
+      if (gameRunning) { snakeAnimationFrame = requestAnimationFrame(gameLoop); }
     }
-
+    
     function updateSnakeGame() {
-      // Update direction if valid
       if ((nextDirection === 'left' && direction !== 'right') ||
           (nextDirection === 'right' && direction !== 'left') ||
           (nextDirection === 'up' && direction !== 'down') ||
           (nextDirection === 'down' && direction !== 'up')) {
         direction = nextDirection;
       }
+      
       const head = { x: snake[0].x, y: snake[0].y };
       if (direction === 'right') head.x++;
       else if (direction === 'left') head.x--;
       else if (direction === 'up') head.y--;
       else if (direction === 'down') head.y++;
-
-      // Check collision with walls
+      
       if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
         gameOver();
         return;
       }
-      // Check collision with self
+      
       for (let segment of snake) {
-        if (segment.x === head.x && segment.y === head.y) {
-          gameOver();
-          return;
-        }
+        if (segment.x === head.x && segment.y === head.y) { gameOver(); return; }
       }
+      
       snake.unshift(head);
-      // Check if food is eaten
       if (head.x === food.x && head.y === food.y) {
         score++;
         updateScore();
-        playSound('eatSound');
+        updateHighScore();
+        playSound('eatSound'); // Play eat sound
         placeFood();
       } else {
         snake.pop();
       }
       drawSnakeGame();
     }
-
+    
     function drawSnakeGame() {
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      // Draw food
-      ctx.fillStyle = '#02d463';
-      ctx.fillRect(food.x * cellSize, food.y * cellSize, cellSize, cellSize);
-      // Draw snake
-      ctx.fillStyle = '#02d463';
+      ctxSnake.fillStyle = '#0a0a0a';
+      ctxSnake.fillRect(0, 0, canvasSnake.width, canvasSnake.height);
+      
+      // Draw food with retro glow
+      ctxSnake.shadowColor = '#00ff41';
+      ctxSnake.shadowBlur = 5;
+      ctxSnake.fillStyle = '#00ff41';
+      ctxSnake.fillRect(food.x * cellSizeSnake, food.y * cellSizeSnake, cellSizeSnake, cellSizeSnake);
+      
+      // Draw snake with retro glow
+      ctxSnake.fillStyle = '#00ff41';
       for (let segment of snake) {
-        ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
+        ctxSnake.fillRect(segment.x * cellSizeSnake, segment.y * cellSizeSnake, cellSizeSnake, cellSizeSnake);
       }
+      ctxSnake.shadowBlur = 0;
     }
-
+    
     function placeFood() {
-      food = {
-        x: Math.floor(Math.random() * gridWidth),
-        y: Math.floor(Math.random() * gridHeight)
-      };
+      food = { x: Math.floor(Math.random() * gridWidth), y: Math.floor(Math.random() * gridHeight) };
       for (let segment of snake) {
-        if (segment.x === food.x && segment.y === food.y) {
-          placeFood();
-          return;
-        }
+        if (segment.x === food.x && segment.y === food.y) { placeFood(); return; }
       }
     }
-
+    
     function gameOver() {
       gameRunning = false;
+      stopGameTimer();
       cancelAnimationFrame(snakeAnimationFrame);
-      playSound('gameOverSound');
-      document.getElementById('notif').innerHTML = 'GAME OVER <span class="close-notif" id="closeNotif">X</span>';
+      playGameOverSequence(); // Play game over sequence
+      updateHighScore();
+      
+      const finalTime = document.getElementById('gameTime').textContent;
+      document.getElementById('notif').innerHTML = `GAME OVER - Score: ${score} | Time: ${finalTime} <span class="close-notif" id="closeNotif">×</span>`;
       document.getElementById('notif').style.display = 'block';
       document.getElementById('restartSnakeButton').style.display = 'block';
-      // Add listener for closing notification
       document.getElementById('closeNotif').addEventListener('click', () => {
         document.getElementById('notif').style.display = 'none';
       });
     }
-
+    
     function updateScore() {
-      document.getElementById('scoreDisplay').innerText = "Score: " + score;
+      document.getElementById('currentScore').textContent = score;
     }
-
+    
     function handleKeyDown(e) {
       const key = e.key.toLowerCase();
       if (key === 'w' || key === 'arrowup') nextDirection = 'up';
@@ -1374,69 +3113,136 @@
       else if (key === 's' || key === 'arrowdown') nextDirection = 'down';
       else if (key === 'd' || key === 'arrowright') nextDirection = 'right';
     }
-
+    
     function openSnakeModal() {
       document.getElementById('snakeModal').style.display = 'block';
-      
       document.body.style.overflow = 'hidden';
+      
+      // Pause main page music
+      pauseMainMusic();
+      
+      // Initialize high score display
+      document.getElementById('highScore').textContent = highScore;
       startSnakeGame();
     }
-
+    
     function closeSnakeModal() {
       document.getElementById('snakeModal').style.display = 'none';
+      gameRunning = false;
+      stopGameTimer();
+      stopSnakeAudio(); // Stop snake game music
       cancelAnimationFrame(snakeAnimationFrame);
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
+      
+      // Resume main page music
+      resumeMainMusic();
     }
 
+    function pauseMainMusic() {
+      if (!currentMainAudio) return;
+      
+      // Remember if music was playing before pausing
+      wasPlayingBeforeSnake = !currentMainAudio.paused;
+      
+      if (!currentMainAudio.paused) {
+        currentMainAudio.pause();
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        playPauseBtn.innerHTML = '<i class="fa fa-play"></i>';
+        playPauseBtn.classList.remove('active');
+        stopVisualizer();
+      }
+    }
+
+    function resumeMainMusic() {
+      if (!currentMainAudio || !wasPlayingBeforeSnake || mainAudioMuted) return;
+      
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      
+      currentMainAudio.play().then(() => {
+        playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
+        playPauseBtn.classList.add('active');
+        if (!isVisualizerActive) {
+          startVisualizer();
+        }
+      }).catch(err => {
+        console.log('Resume music failed:', err);
+      });
+    }
+    
     document.getElementById('restartSnakeButton').addEventListener('click', () => {
-      playSound('restartSound');
+      stopGameTimer();
       cancelAnimationFrame(snakeAnimationFrame);
       startSnakeGame();
     });
-
+    
     document.getElementById('closeSnakeModal').addEventListener('click', closeSnakeModal);
-
+    
     document.querySelectorAll('#snakeModal .mobile-controls button').forEach(button => {
       button.addEventListener('click', () => {
-        const dir = button.getAttribute('data-dir');
-        nextDirection = dir;
+        nextDirection = button.getAttribute('data-dir');
       });
     });
-
-    // Touch support for swipe gestures on the canvas
-    let touchStartX = null;
-    let touchStartY = null;
-    canvas.addEventListener('touchstart', function(e) {
+    
+    let touchStartX = null, touchStartY = null;
+    canvasSnake.addEventListener('touchstart', function(e) {
       const touch = e.touches[0];
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
     }, false);
-    canvas.addEventListener('touchmove', function(e) {
+    
+    canvasSnake.addEventListener('touchmove', function(e) {
       if (!touchStartX || !touchStartY) return;
       const touch = e.touches[0];
       let diffX = touch.clientX - touchStartX;
       let diffY = touch.clientY - touchStartY;
       if (Math.abs(diffX) > Math.abs(diffY)) {
-        if (diffX > 0) nextDirection = 'right';
-        else nextDirection = 'left';
+        nextDirection = diffX > 0 ? 'right' : 'left';
       } else {
-        if (diffY > 0) nextDirection = 'down';
-        else nextDirection = 'up';
+        nextDirection = diffY > 0 ? 'down' : 'up';
       }
-      // Reset start values after a swipe
       touchStartX = null;
       touchStartY = null;
       e.preventDefault();
     }, false);
 
-    function playSound(id) {
-      const sound = document.getElementById(id);
-      if (sound) {
-        sound.currentTime = 0;
-        sound.play();
+    // ===== Retro Window Resize Handling =====
+    window.addEventListener('resize', () => {
+      if (pcRenderer && pcCamera) {
+        const canvas = document.getElementById('pcCanvas');
+        pcRenderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+        pcCamera.aspect = canvas.offsetWidth / canvas.offsetHeight;
+        pcCamera.updateProjectionMatrix();
       }
+    });
+
+    // ===== Handle user interaction for audio autoplay =====
+    function setupUserInteractionListeners() {
+      const events = ['click', 'touchstart', 'keydown'];
+      
+      function handleFirstInteraction() {
+        hasUserInteracted = true;
+        if (audioContext && audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        
+        // Try to start music if controller is visible and music isn't already playing
+        tryStartMusicOnInteraction();
+        
+        // Remove all event listeners after first interaction
+        events.forEach(event => {
+          document.removeEventListener(event, handleFirstInteraction);
+        });
+      }
+      
+      // Add event listeners for first user interaction
+      events.forEach(event => {
+        document.addEventListener(event, handleFirstInteraction, { passive: true });
+      });
     }
+
+    // Call this when page loads
+    setupUserInteractionListeners();
   </script>
 </body>
 </html>
