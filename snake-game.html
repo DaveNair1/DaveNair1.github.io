@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Retro Snake – Dave Nair</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+<link rel="shortcut icon" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+:root{--green:#00ff41;--amber:#ffb000;--white:#c0c0c0;--black:#0a0a0a;--shadow:rgba(0,255,65,.3);--red:#ff5f56}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',monospace;background:var(--black);color:var(--green);height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+body::before,body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none}
+body::before{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><pattern id='g' width='10' height='10' patternUnits='userSpaceOnUse'><path d='M10 0H0v10' fill='none' stroke='rgba(0,255,65,0.1)' stroke-width='0.5'/></pattern></defs><rect width='100' height='100' fill='url(%23g)'/></svg>");animation:move 25s linear infinite}
+@keyframes move{to{transform:translate(10px,10px)}}
+body::after{background:repeating-linear-gradient(180deg,transparent 0 2px,rgba(0,255,65,.05) 2px 4px);animation:scan .12s linear infinite}
+@keyframes scan{to{transform:translateY(4px)}}
+
+.game{width:100vw;max-width:480px;background:rgba(26,26,26,.9);border:2px solid var(--green);border-radius:10px;box-shadow:0 0 25px var(--shadow);padding:12px;display:flex;flex-direction:column;align-items:center}
+.header{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:8px}
+.title{font-size:1.35rem;text-shadow:0 0 8px var(--shadow)}
+.back{background:var(--green);border:none;color:var(--black);padding:6px 12px;border-radius:5px;font-weight:bold;cursor:pointer}
+.back:hover{background:var(--white)}
+.settings{background:var(--green);border:none;color:var(--black);padding:6px 10px;border-radius:5px;font-weight:bold;cursor:pointer}
+.settings:hover{background:var(--white)}
+
+.stats{display:flex;gap:6px;font-size:.8rem;margin-bottom:6px}
+.stats div{text-align:center;flex:1}
+.stats span{display:block}
+.canvas-wrapper{width:100%;aspect-ratio:1;border:3px solid var(--green);border-radius:6px;box-shadow:0 0 15px var(--shadow)}
+#game{width:100%;height:100%}
+
+.music{display:flex;gap:6px;margin-bottom:6px}
+.btn{background:var(--green);border:none;color:var(--black);padding:6px 10px;font-weight:bold;border-radius:5px;cursor:pointer;box-shadow:0 0 8px rgba(0,255,65,.3);font-size:.75rem}
+.btn:hover{background:var(--white)}
+.btn.muted{background:var(--red);color:#fff}
+
+.controls{margin:6px 0}
+.mobile{display:grid;grid-template-areas:'. up .' 'left . right' '. down .';grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:6px;margin-top:4px}
+.mobile button{background:var(--green);border:none;border-radius:50%;font-size:1.1rem;color:var(--black);font-weight:bold;cursor:pointer;box-shadow:0 0 6px rgba(0,255,65,.3)}
+.mobile button:hover{background:var(--white)}
+[data-dir="u"]{grid-area:up}[data-dir="d"]{grid-area:down}[data-dir="l"]{grid-area:left}[data-dir="r"]{grid-area:right}
+
+.note{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,176,0,.92);color:var(--black);padding:16px 22px;border-radius:6px;border:2px solid var(--amber);display:none;font-weight:bold;z-index:999}
+.note.show{display:block}
+
+.settings-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,26,26,.95);border:2px solid var(--green);border-radius:10px;padding:20px;z-index:1000;display:none;min-width:300px;box-shadow:0 0 25px var(--shadow)}
+.settings-panel.show{display:block}
+.settings-panel h3{color:var(--green);margin-bottom:15px;text-align:center}
+.setting-group{margin-bottom:15px}
+.setting-group label{display:block;margin-bottom:5px;color:var(--green)}
+.setting-group select,.setting-group input{background:var(--black);color:var(--green);border:1px solid var(--green);padding:5px;border-radius:3px;width:100%}
+.setting-buttons{display:flex;gap:10px;justify-content:center}
+.close-settings{background:var(--green);border:none;color:var(--black);padding:8px 16px;border-radius:5px;font-weight:bold;cursor:pointer}
+.close-settings:hover{background:var(--white)}
+
+.difficulty-indicator{font-size:.9rem;margin-bottom:6px;text-align:center}
+.difficulty-easy{color:#00ff41}
+.difficulty-medium{color:#ffb000}
+.difficulty-hard{color:#ff5f56}
+
+@media(max-width:380px){.btn{padding:4px 8px;font-size:.7rem}.mobile{grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px)}.mobile button{font-size:1rem}}
+</style>
+</head>
+<body>
+<div class="game">
+  <div class="header">
+    <button class="back" onclick="location.href='index.html'"><i class="fa fa-arrow-left"></i></button>
+    <span class="title">RETRO SNAKE</span>
+    <button class="settings" id="settingsBtn"><i class="fa fa-cog"></i></button>
+  </div>
+
+  <div class="difficulty-indicator" id="difficultyDisplay">DIFFICULTY: EASY</div>
+
+  <div class="music">
+    <button class="btn" id="musicBtn"><i class="fa fa-volume-up"></i> MUSIC</button>
+    <button class="btn" id="sfxBtn"><i class="fa fa-volume-up"></i> SFX</button>
+  </div>
+
+  <div class="stats">
+    <div><span>SCORE</span><b id="score">0</b></div>
+    <div><span>HIGH</span><b id="high">0</b></div>
+    <div><span>TIME</span><b id="time">00:00</b></div>
+  </div>
+
+  <div class="canvas-wrapper"><canvas id="game" width="400" height="400"></canvas></div>
+
+  <div class="controls"><button class="btn" id="restart">RESTART</button></div>
+
+  <div class="mobile">
+    <button data-dir="u">↑</button>
+    <button data-dir="l">←</button>
+    <button data-dir="d">↓</button>
+    <button data-dir="r">→</button>
+  </div>
+</div>
+
+<div id="note" class="note"></div>
+
+<div id="settingsPanel" class="settings-panel">
+  <h3>GAME SETTINGS</h3>
+  <div class="setting-group">
+    <label for="difficulty">Difficulty Level:</label>
+    <select id="difficulty">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
+  <div class="setting-group">
+    <label for="waveEffect">Snake Wave Effect:</label>
+    <select id="waveEffect">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+    </select>
+  </div>
+  <div class="setting-buttons">
+    <button class="close-settings" id="saveSettings">SAVE & CLOSE</button>
+  </div>
+</div>
+
+<audio id="music" loop><source src="/DaveNair1.github.io/static/audio/retro-game-arcade-236133.mp3" type="audio/mpeg"></audio>
+<audio id="eat"><source src="/DaveNair1.github.io/static/audio/point-smooth-beep-230573.mp3" type="audio/mpeg"></audio>
+<audio id="over"><source src="/DaveNair1.github.io/static/audio/game-over-arcade-6435.mp3" type="audio/mpeg"></audio>
+
+<script>
+const cv=document.getElementById('game'),ctx=cv.getContext('2d');
+const CELL=20,COLS=cv.width/CELL,ROWS=cv.height/CELL;
+let snake,food,obstacles=[],dir='r',next='r',score=0,high=+localStorage.getItem('snakeHigh')||0,start,tmInt,loop;
+let difficulty='easy',waveEffect=true,gameSpeed=180;
+const sEl=document.getElementById('score'),hEl=document.getElementById('high'),tEl=document.getElementById('time'),note=document.getElementById('note');
+const music=document.getElementById('music'),eat=document.getElementById('eat'),over=document.getElementById('over');
+let mMute=localStorage.getItem('mMute')==='1',sMute=localStorage.getItem('sMute')==='1';
+const mBtn=document.getElementById('musicBtn'),sBtn=document.getElementById('sfxBtn');
+const settingsPanel=document.getElementById('settingsPanel'),difficultyDisplay=document.getElementById('difficultyDisplay');
+
+// Load settings
+difficulty = localStorage.getItem('gameDifficulty') || 'easy';
+waveEffect = localStorage.getItem('waveEffect') !== 'off';
+document.getElementById('difficulty').value = difficulty;
+document.getElementById('waveEffect').value = waveEffect ? 'on' : 'off';
+
+function updateDifficulty() {
+  const speeds = {easy: 180, medium: 120, hard: 80};
+  gameSpeed = speeds[difficulty];
+  
+  const displayClass = difficulty === 'easy' ? 'difficulty-easy' : 
+                     difficulty === 'medium' ? 'difficulty-medium' : 'difficulty-hard';
+  difficultyDisplay.className = 'difficulty-indicator ' + displayClass;
+  difficultyDisplay.textContent = `DIFFICULTY: ${difficulty.toUpperCase()}`;
+  
+  // Generate obstacles for medium and hard
+  obstacles = [];
+  if (difficulty === 'medium') {
+    for (let i = 0; i < 3; i++) {
+      obstacles.push({x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS)});
+    }
+  } else if (difficulty === 'hard') {
+    for (let i = 0; i < 6; i++) {
+      obstacles.push({x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS)});
+    }
+  }
+}
+
+// Settings panel
+document.getElementById('settingsBtn').onclick = () => {
+  settingsPanel.classList.add('show');
+};
+
+document.getElementById('saveSettings').onclick = () => {
+  difficulty = document.getElementById('difficulty').value;
+  waveEffect = document.getElementById('waveEffect').value === 'on';
+  
+  localStorage.setItem('gameDifficulty', difficulty);
+  localStorage.setItem('waveEffect', waveEffect ? 'on' : 'off');
+  
+  updateDifficulty();
+  settingsPanel.classList.remove('show');
+  init(); // Restart game with new settings
+};
+
+function updateAudioBtns(){
+  mBtn.innerHTML='<i class="fa '+(mMute?'fa-volume-off':'fa-volume-up')+'"></i> MUSIC';
+  sBtn.innerHTML='<i class="fa '+(sMute?'fa-volume-off':'fa-volume-up')+'"></i> SFX';
+  mBtn.classList.toggle('muted',mMute);sBtn.classList.toggle('muted',sMute);
+}
+function playMusic(){if(!mMute){music.currentTime=0;music.play().catch(()=>{});}}
+function stopMusic(){music.pause();music.currentTime=0;}
+function playSound(a){if(!sMute){a.currentTime=0;a.play().catch(()=>{});}}
+
+mBtn.onclick=()=>{mMute=!mMute;localStorage.setItem('mMute',mMute?'1':'0');updateAudioBtns();if(mMute)stopMusic();else playMusic();};
+sBtn.onclick=()=>{sMute=!sMute;localStorage.setItem('sMute',sMute?'1':'0');updateAudioBtns();};
+
+document.getElementById('restart').onclick=init;
+document.querySelectorAll('.mobile button').forEach(b=>b.onclick=()=>next=b.dataset.dir);
+document.addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase();
+  if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){
+    next={'w':'u','arrowup':'u','a':'l','arrowleft':'l','s':'d','arrowdown':'d','d':'r','arrowright':'r'}[k];
+  }
+  if(k==='escape' && settingsPanel.classList.contains('show')) {
+    settingsPanel.classList.remove('show');
+  }
+});
+
+function opposite(a,b){return (a==='l'&&b==='r')||(a==='r'&&b==='l')||(a==='u'&&b==='d')||(a==='d'&&b==='u');}
+
+function placeFood(){
+  do{
+    food={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)};
+  } while(snake.some(s=>s.x===food.x&&s.y===food.y) || obstacles.some(o=>o.x===food.x&&o.y===food.y));
+}
+
+function init(){
+  clearInterval(loop);clearInterval(tmInt);
+  updateDifficulty();
+  snake=[{x:10,y:10}];dir='r';next='r';score=0;
+  
+  // Ensure obstacles don't spawn on snake
+  obstacles = obstacles.filter(o => !(o.x === 10 && o.y === 10));
+  
+  placeFood();start=Date.now();
+  loop=setInterval(tick,gameSpeed);
+  tmInt=setInterval(()=>{const t=((Date.now()-start)/1e3)|0;tEl.textContent=(t/60|0).toString().padStart(2,'0')+':'+(t%60).toString().padStart(2,'0');},1e3);
+  playMusic();updateAudioBtns();draw();updateUI();
+}
+
+function tick(){
+  if(!opposite(dir,next))dir=next;
+  const head={...snake[0]};
+  if(dir==='l')--head.x; else if(dir==='r')++head.x; else if(dir==='u')--head.y; else ++head.y;
+  
+  // Check collisions
+  if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||
+     snake.some(s=>s.x===head.x&&s.y===head.y)||
+     obstacles.some(o=>o.x===head.x&&o.y===head.y)){
+    gameOver();return;
+  }
+  
+  snake.unshift(head);
+  if(head.x===food.x&&head.y===food.y){score++;playSound(eat);placeFood();}else snake.pop();
+  draw();updateUI();
+}
+
+function draw(){
+  const t=Date.now();
+  ctx.fillStyle='#0a0a0a';ctx.fillRect(0,0,cv.width,cv.height);
+
+  // Draw obstacles
+  ctx.fillStyle='#ff5f56';
+  ctx.shadowColor='#ff5f56';ctx.shadowBlur=6;
+  obstacles.forEach(obs => {
+    ctx.fillRect(obs.x*CELL, obs.y*CELL, CELL, CELL);
+  });
+  ctx.shadowBlur=0;
+
+  // Draw snake (unified green color, no gaps)
+  ctx.fillStyle='#00ff41';
+  ctx.shadowColor='#00ff41';ctx.shadowBlur=4;
+  
+  snake.forEach((segment, i) => {
+    let x = segment.x * CELL;
+    let y = segment.y * CELL;
+    
+    // Apply wave effect only to tail if enabled
+    if (waveEffect && i === snake.length - 1 && snake.length > 1) {
+      const prev = snake[snake.length - 2];
+      let dx = segment.x - prev.x;
+      let dy = segment.y - prev.y;
+      let offset = Math.sin(t / 120) * 3;
+      if (dx !== 0) y += offset;
+      else if (dy !== 0) x += offset;
+    }
+    
+    ctx.fillRect(x, y, CELL, CELL);
+  });
+
+  // Draw head details (eyes and tongue)
+  if (snake.length > 0) {
+    const head = snake[0];
+    const cx = head.x * CELL + CELL / 2;
+    const cy = head.y * CELL + CELL / 2;
+    
+    // Eyes
+    ctx.fillStyle = '#000';
+    ctx.shadowBlur = 0;
+    if (dir === 'u' || dir === 'd') {
+      ctx.beginPath(); ctx.arc(cx - 4, cy + (dir === 'u' ? 2 : -2), 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx + 4, cy + (dir === 'u' ? 2 : -2), 2, 0, Math.PI * 2); ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.arc(cx + (dir === 'l' ? 2 : -2), cy - 4, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx + (dir === 'l' ? 2 : -2), cy + 4, 2, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Tongue
+    ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (dir === 'u') { ctx.moveTo(cx, cy - CELL/2); ctx.lineTo(cx, cy - CELL/2 - 5); }
+    else if (dir === 'd') { ctx.moveTo(cx, cy + CELL/2); ctx.lineTo(cx, cy + CELL/2 + 5); }
+    else if (dir === 'l') { ctx.moveTo(cx - CELL/2, cy); ctx.lineTo(cx - CELL/2 - 5, cy); }
+    else { ctx.moveTo(cx + CELL/2, cy); ctx.lineTo(cx + CELL/2 + 5, cy); }
+    ctx.stroke();
+  }
+
+  // Draw food
+  ctx.shadowColor='#ffff00';ctx.shadowBlur=6;ctx.fillStyle='#ffff00';
+  ctx.fillRect(food.x*CELL+3,food.y*CELL+3,CELL-6,CELL-6);
+  ctx.shadowBlur=0;
+}
+
+function updateUI(){sEl.textContent=score;hEl.textContent=high;}
+function gameOver(){
+  clearInterval(loop);clearInterval(tmInt);stopMusic();playSound(over);
+  if(score>high){high=score;localStorage.setItem('snakeHigh',high);showMsg('NEW HIGH SCORE: '+high);}
+  else showMsg('GAME OVER - Score: '+score);
+}
+function showMsg(msg){note.textContent=msg;note.classList.add('show');setTimeout(()=>note.classList.remove('show'),2500);}
+
+updateDifficulty();
+updateAudioBtns();
+init();
+</script>
+</body>
+</html>

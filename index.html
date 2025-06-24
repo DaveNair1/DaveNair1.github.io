@@ -6,10 +6,10 @@
   <title>DAVE NAIR - Web Dev Portfolio</title>
   
   <!-- Favicon - Multiple sizes for better browser compatibility -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/images/DN_Logo.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/images/DN_Logo.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/images/DN_Logo.png">
-  <link rel="shortcut icon" href="/static/images/DN_Logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+  <link rel="shortcut icon" href="/DaveNair1.github.io/static/images/DN_Logo.png">
 
   <!-- Font Awesome (v4.7) for icons -->
   <link 
@@ -303,35 +303,6 @@
 
     .track-switch:hover {
       opacity: 0.8;
-    }
-
-    /* Snake Game Music Mute */
-    .snake-music-control {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      z-index: 2;
-    }
-
-    .snake-mute-btn {
-      background: var(--terminal-green);
-      border: none;
-      color: var(--crt-black);
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-      transition: all 0.2s ease;
-    }
-
-    .snake-mute-btn:hover {
-      background: var(--terminal-white);
-    }
-
-    .snake-mute-btn.muted {
-      background: #ff5f56;
-      color: white;
     }
 
     /* ---------- Retro Computer Terminal ---------- */
@@ -1374,144 +1345,6 @@
       z-index: -1;
     }
 
-    /* ---------- Retro Snake Game Modal ---------- */
-    #snakeModal {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(10, 10, 10, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 11000;
-      color: var(--terminal-green);
-      font-family: 'Courier New', monospace;
-      overflow: hidden;
-    }
-    #snakeModal .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      background: rgba(34, 34, 34, 0.9);
-      border-bottom: 1px solid #333;
-    }
-    #snakeModal .modal-header h2 { 
-      margin: 0; 
-      font-size: 1.3rem;
-      color: var(--terminal-green);
-      text-shadow: 0 0 5px var(--retro-shadow);
-    }
-    #snakeModal .modal-header .close-modal {
-      cursor: pointer;
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: var(--terminal-white);
-      background: #ff5f56;
-      padding: 4px 10px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-    }
-    #snakeModal .modal-header .close-modal:hover { 
-      background: #ff3030;
-    }
-    #snakeModal .modal-content {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: calc(100% - 50px);
-      padding: 1.5rem;
-    }
-
-    /* Snake Game UI */
-    .game-stats {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-      color: var(--terminal-green);
-    }
-    .stat-item {
-      text-align: center;
-    }
-    .stat-label {
-      font-size: 0.8rem;
-      color: #ccc;
-      display: block;
-    }
-    .stat-value {
-      font-weight: bold;
-      text-shadow: 0 0 3px var(--retro-shadow);
-    }
-    #notif {
-      position: absolute;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 176, 0, 0.9);
-      color: var(--crt-black);
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 1.1rem;
-      z-index: 2;
-      display: none;
-    }
-    #notif .close-notif {
-      margin-left: 12px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    #snakeModal canvas {
-      border: 2px solid var(--terminal-green);
-      background: var(--crt-black);
-      box-shadow: 0 0 20px var(--retro-shadow);
-      border-radius: 4px;
-    }
-    #snakeModal .instructions { 
-      margin-top: 12px; 
-      text-align: center;
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-    #snakeModal .mobile-controls {
-      margin-top: 12px;
-      display: flex;
-      gap: 10px;
-    }
-    #snakeModal .mobile-controls button {
-      background: var(--terminal-green);
-      color: var(--crt-black);
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: 'Courier New', monospace;
-    }
-    #snakeModal .mobile-controls button:hover {
-      background: var(--terminal-white);
-    }
-    #restartSnakeButton {
-      display: none;
-      margin-top: 12px;
-      background: var(--terminal-green);
-      border: none;
-      color: var(--crt-black);
-      padding: 8px 16px;
-      cursor: pointer;
-      font-family: 'Courier New', monospace;
-      font-size: 1rem;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-    }
-    #restartSnakeButton:hover { 
-      background: var(--terminal-white);
-    }
-
     /* ---------- Responsive Design ---------- */
     @media (max-width: 800px) {
       .retro-screen {
@@ -1597,10 +1430,6 @@
         width: 140px;
         height: 140px;
       }
-      .game-stats {
-        gap: 1.5rem;
-        font-size: 1rem;
-      }
       .music-controller {
         width: 220px;
         bottom: 10px;
@@ -1650,11 +1479,6 @@
       }
       .contact-link i {
         font-size: 1.8rem;
-      }
-      .game-stats {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: center;
       }
       .music-controller {
         width: 200px;
@@ -1727,7 +1551,7 @@
   <nav>
     <div class="nav-brand">
       <a href="#hero" style="display: flex; align-items: center; gap: 12px;">
-        <img src="/static/images/DN_Logo.png" alt="DN Logo" id="navLogo">
+        <img src="/DaveNair1.github.io/static/images/DN_Logo.png" alt="DN Logo" id="navLogo">
       </a>
     </div>
     <div class="nav-right">
@@ -1801,13 +1625,13 @@
   <section id="about" class="section fade-in">
     <h2 class="section-title"><code>About Me</code></h2>
     <div class="about-wrapper">
-      <img src="/static/images/Screenshot 2025-06-23 at 16.49.15.png" alt="Dave Nair Portrait" class="about-image" />
+      <img src="/DaveNair1.github.io/static/images/Screenshot 2025-06-23 at 16.49.15.png" alt="Dave Nair Portrait" class="about-image" />
       <div class="about-content" id="aboutContent">
         <p>
           Hello! I am <strong>Dave Nair</strong>, a Full-Stack Web Developer and Sessional Academic based in <strong>Melbourne</strong> who loves creating user-friendly websites, intuitive UI/UX designs, and providing comprehensive technical support for educational technology systems.
         </p>
         <p>
-          I follow proven methodologies to craft clean and reliable solutions, applying my technical background and business acumen whist adhering to compliance frameworks. Currently pursuing my Bachelor of Information Technology (Security Management) at Deakin University while working professionally in both development and academic roles.
+          I follow proven methodologies to craft clean and reliable solutions, applying strategic ambidexterity concepts and GDPR compliance frameworks. Currently pursuing my Bachelor of Information Technology (Security Management) at Deakin University while working professionally in both development and academic roles.
         </p>
         <p>
           Let's connect and explore how we can create digital experiences that are secure, compliant, and functionally exceptional while maintaining the highest ethical standards.
@@ -1933,7 +1757,7 @@
       
       <!-- New Experience Card 1: Sessional Academic -->
       <div class="exp-card">
-        <img src="/static/images/rashid-tajuar-g0nVEyiDBAI-unsplash.jpg" alt="Deakin University Academic Role" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/rashid-tajuar-g0nVEyiDBAI-unsplash.jpg" alt="Deakin University Academic Role" class="exp-image" />
         <div class="exp-content">
           <h3>Sessional Academic - Deakin University</h3>
           <p>
@@ -1964,7 +1788,7 @@
 
       <!-- Experience Card 2: Junior Web Developer -->
       <div class="exp-card">
-        <img src="/static/images/software-developer-6521720_1280.jpg" alt="Junior Web Developer Image" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/software-developer-6521720_1280.jpg" alt="Junior Web Developer Image" class="exp-image" />
         <div class="exp-content">
           <h3>Junior Web Developer - C4 Engineering</h3>
           <p>
@@ -1993,7 +1817,7 @@
 
       <!-- Experience Card 3: Frontend Developer Intern -->
       <div class="exp-card">
-        <img src="/static/images/programming-1873854_1280.png" alt="Intern Developer Image" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/programming-1873854_1280.png" alt="Intern Developer Image" class="exp-image" />
         <div class="exp-content">
           <h3>Frontend Developer Intern - C4 Engineering</h3>
           <p>
@@ -2022,7 +1846,7 @@
       
       <!-- Experience Card 4: MOP-Code Project -->
       <div class="exp-card">
-        <img src="/static/images/melbourne-5076478_1280.jpg" alt="MOP-Code Project Image" class="exp-image" />
+        <img src="/DaveNair1.github.io/static/images/melbourne-5076478_1280.jpg" alt="MOP-Code Project Image" class="exp-image" />
         <div class="exp-content">
           <h3>Frontend Developer - Chameleon MOP</h3>
           <p>
@@ -2055,8 +1879,8 @@
   <section id="resume" class="section fade-in">
     <h2 class="section-title"><code>Download Resume</code></h2>
     <div class="resume-download">
-      <a href="/static/docs/Dave Nair Portfolio Resume.pdf" download>
-        <img src="/static/images/file-arrow-down-solid.svg" alt="Download Resume">
+      <a href="/DaveNair1.github.io/static/docs/Dave Nair Portfolio Resume.pdf" download>
+        <img src="/DaveNair1.github.io/static/images/file-arrow-down-solid.svg" alt="Download Resume">
       </a>
     </div>
   </section>
@@ -2104,50 +1928,6 @@
     </div>
   </div>
 
-  <!-- Enhanced Retro Snake Game Modal -->
-  <div id="snakeModal">
-    <div class="modal-header">
-      <h2>RETRO SNAKE</h2>
-      <span class="close-modal" id="closeSnakeModal">×</span>
-    </div>
-    <div class="modal-content">
-      <div id="notif"></div>
-      
-      <!-- Snake Game Music Control -->
-      <div class="snake-music-control">
-        <button class="snake-mute-btn" id="snakeMuteBtn">
-          <i class="fa fa-volume-up"></i> MUTE
-        </button>
-      </div>
-      
-      <!-- Game Statistics Display -->
-      <div class="game-stats">
-        <div class="stat-item">
-          <span class="stat-label">SCORE</span>
-          <span class="stat-value" id="currentScore">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">HIGH SCORE</span>
-          <span class="stat-value" id="highScore">0</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">TIME</span>
-          <span class="stat-value" id="gameTime">00:00</span>
-        </div>
-      </div>
-      
-      <canvas id="snakeCanvas" width="300" height="300"></canvas>
-      <div class="instructions">Use WASD or Arrow keys to control the snake. On mobile, swipe or use the buttons below.</div>
-      <div class="mobile-controls">
-        <button data-dir="up">↑</button>
-        <button data-dir="left">←</button>
-        <button data-dir="down">↓</button>
-        <button data-dir="right">→</button>
-      </div>
-      <button id="restartSnakeButton"><i class="fa fa-refresh"></i> Restart</button>
-    </div>
-  </div>
-
   <!-- Retro Music Controller -->
   <div class="music-controller" id="musicController">
     <!-- Minimized Music Icon -->
@@ -2187,21 +1967,10 @@
   <!-- Audio Elements -->
   <!-- Main page music -->
   <audio id="synthwaveAudio" loop preload="auto">
-    <source src="/static/audio/retro-synthwave-background-soundtrack-341853.mp3" type="audio/mpeg">
+    <source src="/DaveNair1.github.io/static/audio/retro-synthwave-background-soundtrack-341853.mp3" type="audio/mpeg">
   </audio>
   <audio id="lofiAudio" loop preload="auto">
-    <source src="/static/audio/lofi-lofi-song-345371.mp3" type="audio/mpeg">
-  </audio>
-  
-  <!-- Snake game audio -->
-  <audio id="snakeGameAudio" loop preload="auto">
-    <source src="/static/audio/retro-game-arcade-236133.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="eatSound" preload="auto">
-    <source src="/static/audio/point-smooth-beep-230573.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="gameOverSound" preload="auto">
-    <source src="/static/audio/game-over-arcade-6435.mp3" type="audio/mpeg">
+    <source src="/DaveNair1.github.io/static/audio/lofi-lofi-song-345371.mp3" type="audio/mpeg">
   </audio>
 
   <script>
@@ -2209,19 +1978,12 @@
     let currentMainAudio = null;
     let currentTrack = 'synthwave';
     let mainAudioMuted = false;
-    let snakeAudioMuted = false;
     let audioContext;
     let analyser;
     let dataArray;
     let isVisualizerActive = false;
-    let wasPlayingBeforeSnake = false; // Track if music was playing before snake game
     let wasPlayingBeforePowerOff = false; // Track if music was playing before power off
     let hasUserInteracted = false; // Track if user has interacted with the page
-
-    // ===== Game State Variables =====
-    let highScore = 0;
-    let gameStartTime = 0;
-    let gameTimer = null;
 
     // ===== Audio Initialization =====
     function initializeAudio() {
@@ -2271,7 +2033,6 @@
       currentMainAudio.play().then(() => {
         playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
         playPauseBtn.classList.add('active');
-        wasPlayingBeforeSnake = true; // Set as playing
         wasPlayingBeforePowerOff = true; // Set power off state
         hasUserInteracted = true; // Mark that music is now playing
         if (!isVisualizerActive) {
@@ -2280,7 +2041,6 @@
       }).catch(err => {
         console.log('Auto-play prevented by browser policy, waiting for user interaction');
         // Keep play button showing, music will start on first user interaction
-        wasPlayingBeforeSnake = false;
         wasPlayingBeforePowerOff = false;
       });
     }
@@ -2306,7 +2066,6 @@
         currentMainAudio.play().then(() => {
           playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
           playPauseBtn.classList.add('active');
-          wasPlayingBeforeSnake = true; // Update playing state
           wasPlayingBeforePowerOff = true; // Update power off state
           if (!isVisualizerActive) {
             startVisualizer();
@@ -2318,7 +2077,6 @@
         currentMainAudio.pause();
         playPauseBtn.innerHTML = '<i class="fa fa-play"></i>';
         playPauseBtn.classList.remove('active');
-        wasPlayingBeforeSnake = false; // Update playing state
         wasPlayingBeforePowerOff = false; // Update power off state
         stopVisualizer();
       }
@@ -2380,11 +2138,9 @@
         currentMainAudio.play().then(() => {
           playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
           playPauseBtn.classList.add('active');
-          wasPlayingBeforeSnake = true; // Update playing state
           wasPlayingBeforePowerOff = true; // Update power off state
         });
       } else {
-        wasPlayingBeforeSnake = false; // Update playing state
         wasPlayingBeforePowerOff = false; // Update power off state
       }
       
@@ -2467,66 +2223,6 @@
       }
     }
 
-    // ===== Snake Game Audio Functions =====
-    function toggleSnakeMute() {
-      const snakeGameAudio = document.getElementById('snakeGameAudio');
-      const snakeMuteBtn = document.getElementById('snakeMuteBtn');
-      
-      snakeAudioMuted = !snakeAudioMuted;
-      snakeGameAudio.muted = snakeAudioMuted;
-      
-      if (snakeAudioMuted) {
-        snakeMuteBtn.innerHTML = '<i class="fa fa-volume-off"></i> UNMUTE';
-        snakeMuteBtn.classList.add('muted');
-      } else {
-        snakeMuteBtn.innerHTML = '<i class="fa fa-volume-up"></i> MUTE';
-        snakeMuteBtn.classList.remove('muted');
-      }
-    }
-
-    function startSnakeAudio() {
-      const snakeGameAudio = document.getElementById('snakeGameAudio');
-      snakeGameAudio.volume = 0.6;
-      snakeGameAudio.muted = snakeAudioMuted;
-      snakeGameAudio.play().catch(err => {
-        console.log('Snake audio play failed:', err);
-      });
-    }
-
-    function stopSnakeAudio() {
-      const snakeGameAudio = document.getElementById('snakeGameAudio');
-      snakeGameAudio.pause();
-      snakeGameAudio.currentTime = 0;
-    }
-
-    function playSound(soundId) {
-      const sound = document.getElementById(soundId);
-      if (sound && !snakeAudioMuted) {
-        sound.currentTime = 0;
-        sound.volume = 0.5;
-        sound.play().catch(err => {
-          console.log('Sound play failed:', err);
-        });
-      }
-    }
-
-    function playGameOverSequence() {
-      if (!snakeAudioMuted) {
-        // Stop game music first
-        stopSnakeAudio();
-        
-        // Play game over sound
-        const gameOverSound = document.getElementById('gameOverSound');
-        gameOverSound.volume = 0.7;
-        gameOverSound.play().catch(err => {
-          console.log('Game over sound play failed:', err);
-        });
-        
-        // FIXED: Don't restart game music after game over
-        // The music should only play during active gameplay
-      }
-    }
-
     // ===== Retro Scroll Progress Bar =====
     window.addEventListener('scroll', () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -2579,7 +2275,7 @@
       "> Sessional Academic @ Deakin University", 
       "> Building secure, scalable, and compliant web solutions",
       "",
-      "> Press S to play snake game or press "
+      "> Press S to play snake game or click "
     ];
     let lineIndex = 0;
     let charIndex = 0;
@@ -2602,7 +2298,7 @@
         } else {
           terminal.innerHTML = terminal.innerHTML.replace(/<span class="cursor">[_█]<\/span>$/, "");
           if (lineIndex === lines.length - 1) {
-            terminal.innerHTML += '<button id="launchGame">LAUNCH</button>\n';
+            terminal.innerHTML += '<button id="launchGame" onclick="launchSnakeGame()">LAUNCH</button>\n';
           } else {
             terminal.innerHTML += "\n";
           }
@@ -2614,10 +2310,6 @@
       } else {
         document.getElementById('resetTerminal').style.display = 'block';
         terminalFinished = true;
-        const launchButton = document.getElementById('launchGame');
-        if (launchButton) {
-          launchButton.addEventListener('click', openSnakeModal);
-        }
       }
     }
     
@@ -2684,6 +2376,12 @@
       }, 30);
     }
     
+    // Function to launch snake game on separate page
+    function launchSnakeGame() {
+      // Open snake game in a new window/tab
+      window.open('snake-game.html', '_blank', 'width=800,height=600,resizable=yes,scrollbars=no');
+    }
+    
     window.addEventListener('load', () => {
       simulateProgressBar();
       createParticles();
@@ -2728,8 +2426,8 @@
     resetBtn.addEventListener('click', reinitializeTerminal);
     
     document.addEventListener('keydown', (e) => {
-      if (terminalFinished && e.key.toLowerCase() === 's' && document.getElementById('snakeModal').style.display !== 'block') {
-        openSnakeModal();
+      if (terminalFinished && e.key.toLowerCase() === 's') {
+        launchSnakeGame();
       }
     });
 
@@ -2836,9 +2534,6 @@
       document.getElementById('trackSwitch').addEventListener('click', switchTrack);
       document.getElementById('musicMinimize').addEventListener('click', minimizeController);
       document.getElementById('musicIcon').addEventListener('click', expandController);
-      
-      // Snake game mute button
-      document.getElementById('snakeMuteBtn').addEventListener('click', toggleSnakeMute);
     });
     
     // Backup initialization on window load
@@ -2932,7 +2627,6 @@
       currentMainAudio.play().then(() => {
         playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
         playPauseBtn.classList.add('active');
-        wasPlayingBeforeSnake = true;
         if (!isVisualizerActive) {
           startVisualizer();
         }
@@ -2982,260 +2676,6 @@
       cancelAnimationFrame(pcAnimationId);
       showTerminal();
     });
-
-    /* ===== Enhanced Retro Snake Game Code ===== */
-    let snakeAnimationFrame;
-    let lastTimeSnake = 0;
-    let gameRunning = false;
-    let snakeSpeed = 120;
-    let snake, food, direction, nextDirection, score;
-    const canvasSnake = document.getElementById('snakeCanvas');
-    const ctxSnake = canvasSnake.getContext('2d');
-    const cellSizeSnake = 15;
-    const gridWidth = canvasSnake.width / cellSizeSnake;
-    const gridHeight = canvasSnake.height / cellSizeSnake;
-    
-    // ===== Game Timer Functions =====
-    function startGameTimer() {
-      gameStartTime = Date.now();
-      gameTimer = setInterval(() => {
-        if (gameRunning) {
-          const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
-          const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
-          const seconds = (elapsed % 60).toString().padStart(2, '0');
-          document.getElementById('gameTime').textContent = `${minutes}:${seconds}`;
-        }
-      }, 1000);
-    }
-    
-    function stopGameTimer() {
-      if (gameTimer) {
-        clearInterval(gameTimer);
-        gameTimer = null;
-      }
-    }
-    
-    function resetGameTimer() {
-      document.getElementById('gameTime').textContent = '00:00';
-    }
-    
-    function updateHighScore() {
-      if (score > highScore) {
-        highScore = score;
-        document.getElementById('highScore').textContent = highScore;
-      }
-    }
-    
-    function startSnakeGame() {
-      snake = [{ x: 10, y: 10 }];
-      direction = 'right';
-      nextDirection = 'right';
-      score = 0;
-      updateScore();
-      resetGameTimer();
-      document.getElementById('notif').style.display = 'none';
-      document.getElementById('restartSnakeButton').style.display = 'none';
-      placeFood();
-      document.removeEventListener('keydown', handleKeyDown);
-      document.addEventListener('keydown', handleKeyDown);
-      lastTimeSnake = 0;
-      gameRunning = true;
-      startGameTimer();
-      startSnakeAudio(); // Start snake game music
-      snakeAnimationFrame = requestAnimationFrame(gameLoop);
-    }
-    
-    function gameLoop(timestamp) {
-      if (!gameRunning) return;
-      if (!lastTimeSnake) lastTimeSnake = timestamp;
-      const delta = timestamp - lastTimeSnake;
-      if (delta > snakeSpeed) {
-        updateSnakeGame();
-        lastTimeSnake = timestamp;
-      }
-      if (gameRunning) { snakeAnimationFrame = requestAnimationFrame(gameLoop); }
-    }
-    
-    function updateSnakeGame() {
-      if ((nextDirection === 'left' && direction !== 'right') ||
-          (nextDirection === 'right' && direction !== 'left') ||
-          (nextDirection === 'up' && direction !== 'down') ||
-          (nextDirection === 'down' && direction !== 'up')) {
-        direction = nextDirection;
-      }
-      
-      const head = { x: snake[0].x, y: snake[0].y };
-      if (direction === 'right') head.x++;
-      else if (direction === 'left') head.x--;
-      else if (direction === 'up') head.y--;
-      else if (direction === 'down') head.y++;
-      
-      if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
-        gameOver();
-        return;
-      }
-      
-      for (let segment of snake) {
-        if (segment.x === head.x && segment.y === head.y) { gameOver(); return; }
-      }
-      
-      snake.unshift(head);
-      if (head.x === food.x && head.y === food.y) {
-        score++;
-        updateScore();
-        updateHighScore();
-        playSound('eatSound'); // Play eat sound
-        placeFood();
-      } else {
-        snake.pop();
-      }
-      drawSnakeGame();
-    }
-    
-    function drawSnakeGame() {
-      ctxSnake.fillStyle = '#0a0a0a';
-      ctxSnake.fillRect(0, 0, canvasSnake.width, canvasSnake.height);
-      
-      // Draw food with retro glow
-      ctxSnake.shadowColor = '#00ff41';
-      ctxSnake.shadowBlur = 5;
-      ctxSnake.fillStyle = '#00ff41';
-      ctxSnake.fillRect(food.x * cellSizeSnake, food.y * cellSizeSnake, cellSizeSnake, cellSizeSnake);
-      
-      // Draw snake with retro glow
-      ctxSnake.fillStyle = '#00ff41';
-      for (let segment of snake) {
-        ctxSnake.fillRect(segment.x * cellSizeSnake, segment.y * cellSizeSnake, cellSizeSnake, cellSizeSnake);
-      }
-      ctxSnake.shadowBlur = 0;
-    }
-    
-    function placeFood() {
-      food = { x: Math.floor(Math.random() * gridWidth), y: Math.floor(Math.random() * gridHeight) };
-      for (let segment of snake) {
-        if (segment.x === food.x && segment.y === food.y) { placeFood(); return; }
-      }
-    }
-    
-    function gameOver() {
-      gameRunning = false;
-      stopGameTimer();
-      cancelAnimationFrame(snakeAnimationFrame);
-      playGameOverSequence(); // Play game over sequence
-      updateHighScore();
-      
-      const finalTime = document.getElementById('gameTime').textContent;
-      document.getElementById('notif').innerHTML = `GAME OVER - Score: ${score} | Time: ${finalTime} <span class="close-notif" id="closeNotif">×</span>`;
-      document.getElementById('notif').style.display = 'block';
-      document.getElementById('restartSnakeButton').style.display = 'block';
-      document.getElementById('closeNotif').addEventListener('click', () => {
-        document.getElementById('notif').style.display = 'none';
-      });
-    }
-    
-    function updateScore() {
-      document.getElementById('currentScore').textContent = score;
-    }
-    
-    function handleKeyDown(e) {
-      const key = e.key.toLowerCase();
-      if (key === 'w' || key === 'arrowup') nextDirection = 'up';
-      else if (key === 'a' || key === 'arrowleft') nextDirection = 'left';
-      else if (key === 's' || key === 'arrowdown') nextDirection = 'down';
-      else if (key === 'd' || key === 'arrowright') nextDirection = 'right';
-    }
-    
-    function openSnakeModal() {
-      document.getElementById('snakeModal').style.display = 'block';
-      document.body.style.overflow = 'hidden';
-      
-      // Pause main page music
-      pauseMainMusic();
-      
-      // Initialize high score display
-      document.getElementById('highScore').textContent = highScore;
-      startSnakeGame();
-    }
-    
-    function closeSnakeModal() {
-      document.getElementById('snakeModal').style.display = 'none';
-      gameRunning = false;
-      stopGameTimer();
-      stopSnakeAudio(); // Stop snake game music
-      cancelAnimationFrame(snakeAnimationFrame);
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
-      
-      // Resume main page music
-      resumeMainMusic();
-    }
-
-    function pauseMainMusic() {
-      if (!currentMainAudio) return;
-      
-      // Remember if music was playing before pausing
-      wasPlayingBeforeSnake = !currentMainAudio.paused;
-      
-      if (!currentMainAudio.paused) {
-        currentMainAudio.pause();
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        playPauseBtn.innerHTML = '<i class="fa fa-play"></i>';
-        playPauseBtn.classList.remove('active');
-        stopVisualizer();
-      }
-    }
-
-    function resumeMainMusic() {
-      if (!currentMainAudio || !wasPlayingBeforeSnake || mainAudioMuted) return;
-      
-      const playPauseBtn = document.getElementById('playPauseBtn');
-      
-      currentMainAudio.play().then(() => {
-        playPauseBtn.innerHTML = '<i class="fa fa-pause"></i>';
-        playPauseBtn.classList.add('active');
-        if (!isVisualizerActive) {
-          startVisualizer();
-        }
-      }).catch(err => {
-        console.log('Resume music failed:', err);
-      });
-    }
-    
-    document.getElementById('restartSnakeButton').addEventListener('click', () => {
-      stopGameTimer();
-      cancelAnimationFrame(snakeAnimationFrame);
-      startSnakeGame();
-    });
-    
-    document.getElementById('closeSnakeModal').addEventListener('click', closeSnakeModal);
-    
-    document.querySelectorAll('#snakeModal .mobile-controls button').forEach(button => {
-      button.addEventListener('click', () => {
-        nextDirection = button.getAttribute('data-dir');
-      });
-    });
-    
-    let touchStartX = null, touchStartY = null;
-    canvasSnake.addEventListener('touchstart', function(e) {
-      const touch = e.touches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-    }, false);
-    
-    canvasSnake.addEventListener('touchmove', function(e) {
-      if (!touchStartX || !touchStartY) return;
-      const touch = e.touches[0];
-      let diffX = touch.clientX - touchStartX;
-      let diffY = touch.clientY - touchStartY;
-      if (Math.abs(diffX) > Math.abs(diffY)) {
-        nextDirection = diffX > 0 ? 'right' : 'left';
-      } else {
-        nextDirection = diffY > 0 ? 'down' : 'up';
-      }
-      touchStartX = null;
-      touchStartY = null;
-      e.preventDefault();
-    }, false);
 
     // ===== Retro Window Resize Handling =====
     window.addEventListener('resize', () => {
