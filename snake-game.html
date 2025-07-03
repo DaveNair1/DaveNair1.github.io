@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>Retro Snake – Dave Nair</title>
-<link rel="icon" type="image/png" sizes="32x32" href="/static/images/DN_Logo.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/static/images/DN_Logo.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/static/images/DN_Logo.png">
-<link rel="shortcut icon" href="/static/images/DN_Logo.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/DaveNair1.github.io/static/images/DN_Logo.png">
+<link rel="shortcut icon" href="/DaveNair1.github.io/static/images/DN_Logo.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 :root{--green:#00ff41;--amber:#ffb000;--white:#c0c0c0;--black:#0a0a0a;--shadow:rgba(0,255,65,.3);--red:#ff5f56}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Courier New',monospace;background:var(--black);color:var(--green);height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+body{font-family:'Courier New',monospace;background:var(--black);color:var(--green);height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 body::before,body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none}
 body::before{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><pattern id='g' width='10' height='10' patternUnits='userSpaceOnUse'><path d='M10 0H0v10' fill='none' stroke='rgba(0,255,65,0.1)' stroke-width='0.5'/></pattern></defs><rect width='100' height='100' fill='url(%23g)'/></svg>");animation:move 25s linear infinite}
 @keyframes move{to{transform:translate(10px,10px)}}
@@ -22,26 +22,29 @@ body::after{background:repeating-linear-gradient(180deg,transparent 0 2px,rgba(0
 .game{width:100vw;max-width:480px;background:rgba(26,26,26,.9);border:2px solid var(--green);border-radius:10px;box-shadow:0 0 25px var(--shadow);padding:12px;display:flex;flex-direction:column;align-items:center}
 .header{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:8px}
 .title{font-size:1.35rem;text-shadow:0 0 8px var(--shadow)}
-.back{background:var(--green);border:none;color:var(--black);padding:6px 12px;border-radius:5px;font-weight:bold;cursor:pointer}
-.back:hover{background:var(--white)}
-.settings{background:var(--green);border:none;color:var(--black);padding:6px 10px;border-radius:5px;font-weight:bold;cursor:pointer}
-.settings:hover{background:var(--white)}
+.back{background:var(--green);border:none;color:var(--black);padding:6px 12px;border-radius:5px;font-weight:bold;cursor:pointer;touch-action:manipulation}
+.back:hover,.back:active{background:var(--white)}
+.settings{background:var(--green);border:none;color:var(--black);padding:6px 10px;border-radius:5px;font-weight:bold;cursor:pointer;touch-action:manipulation}
+.settings:hover,.settings:active{background:var(--white)}
 
 .stats{display:flex;gap:6px;font-size:.8rem;margin-bottom:6px}
 .stats div{text-align:center;flex:1}
 .stats span{display:block}
-.canvas-wrapper{width:100%;aspect-ratio:1;border:3px solid var(--green);border-radius:6px;box-shadow:0 0 15px var(--shadow)}
-#game{width:100%;height:100%}
+.canvas-wrapper{width:100%;aspect-ratio:1;border:3px solid var(--green);border-radius:6px;box-shadow:0 0 15px var(--shadow);position:relative;touch-action:none}
+#game{width:100%;height:100%;cursor:pointer;touch-action:none}
+
+.touch-indicator{position:absolute;top:10px;left:10px;background:rgba(0,255,65,0.8);color:var(--black);padding:4px 8px;border-radius:3px;font-size:0.7rem;font-weight:bold;opacity:0.7;pointer-events:none}
 
 .music{display:flex;gap:6px;margin-bottom:6px}
-.btn{background:var(--green);border:none;color:var(--black);padding:6px 10px;font-weight:bold;border-radius:5px;cursor:pointer;box-shadow:0 0 8px rgba(0,255,65,.3);font-size:.75rem}
-.btn:hover{background:var(--white)}
+.btn{background:var(--green);border:none;color:var(--black);padding:6px 10px;font-weight:bold;border-radius:5px;cursor:pointer;box-shadow:0 0 8px rgba(0,255,65,.3);font-size:.75rem;touch-action:manipulation;transition:all 0.1s ease}
+.btn:hover,.btn:active{background:var(--white);transform:scale(0.95)}
 .btn.muted{background:var(--red);color:#fff}
 
 .controls{margin:6px 0}
-.mobile{display:grid;grid-template-areas:'. up .' 'left . right' '. down .';grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:6px;margin-top:4px}
-.mobile button{background:var(--green);border:none;border-radius:50%;font-size:1.1rem;color:var(--black);font-weight:bold;cursor:pointer;box-shadow:0 0 6px rgba(0,255,65,.3)}
-.mobile button:hover{background:var(--white)}
+.mobile{display:grid;grid-template-areas:'. up .' 'left . right' '. down .';grid-template-columns:repeat(3,45px);grid-template-rows:repeat(3,45px);gap:8px;margin-top:4px}
+.mobile button{background:var(--green);border:none;border-radius:50%;font-size:1.2rem;color:var(--black);font-weight:bold;cursor:pointer;box-shadow:0 0 6px rgba(0,255,65,.3);touch-action:manipulation;transition:all 0.1s ease;position:relative;overflow:hidden}
+.mobile button:hover,.mobile button:active{background:var(--white);transform:scale(0.9)}
+.mobile button:active::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.3);border-radius:50%}
 [data-dir="u"]{grid-area:up}[data-dir="d"]{grid-area:down}[data-dir="l"]{grid-area:left}[data-dir="r"]{grid-area:right}
 
 .note{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,176,0,.92);color:var(--black);padding:16px 22px;border-radius:6px;border:2px solid var(--amber);display:none;font-weight:bold;z-index:999}
@@ -52,17 +55,20 @@ body::after{background:repeating-linear-gradient(180deg,transparent 0 2px,rgba(0
 .settings-panel h3{color:var(--green);margin-bottom:15px;text-align:center}
 .setting-group{margin-bottom:15px}
 .setting-group label{display:block;margin-bottom:5px;color:var(--green)}
-.setting-group select,.setting-group input{background:var(--black);color:var(--green);border:1px solid var(--green);padding:5px;border-radius:3px;width:100%}
+.setting-group select,.setting-group input{background:var(--black);color:var(--green);border:1px solid var(--green);padding:8px;border-radius:3px;width:100%;font-size:16px;touch-action:manipulation}
 .setting-buttons{display:flex;gap:10px;justify-content:center}
-.close-settings{background:var(--green);border:none;color:var(--black);padding:8px 16px;border-radius:5px;font-weight:bold;cursor:pointer}
-.close-settings:hover{background:var(--white)}
+.close-settings{background:var(--green);border:none;color:var(--black);padding:8px 16px;border-radius:5px;font-weight:bold;cursor:pointer;touch-action:manipulation}
+.close-settings:hover,.close-settings:active{background:var(--white)}
 
 .difficulty-indicator{font-size:.9rem;margin-bottom:6px;text-align:center}
 .difficulty-easy{color:#00ff41}
 .difficulty-medium{color:#ffb000}
 .difficulty-hard{color:#ff5f56}
 
-@media(max-width:380px){.btn{padding:4px 8px;font-size:.7rem}.mobile{grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px)}.mobile button{font-size:1rem}}
+.swipe-hint{text-align:center;font-size:0.7rem;color:rgba(0,255,65,0.7);margin-bottom:4px}
+
+@media(max-width:380px){.btn{padding:4px 8px;font-size:.7rem}.mobile{grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:6px}.mobile button{font-size:1rem}}
+@media(hover:none){.mobile{grid-template-columns:repeat(3,50px);grid-template-rows:repeat(3,50px)}}
 </style>
 </head>
 <body>
@@ -86,7 +92,12 @@ body::after{background:repeating-linear-gradient(180deg,transparent 0 2px,rgba(0
     <div><span>TIME</span><b id="time">00:00</b></div>
   </div>
 
-  <div class="canvas-wrapper"><canvas id="game" width="400" height="400"></canvas></div>
+  <div class="swipe-hint">Swipe on game area or use buttons to control</div>
+
+  <div class="canvas-wrapper">
+    <canvas id="game" width="400" height="400"></canvas>
+    <div class="touch-indicator">TOUCH READY</div>
+  </div>
 
   <div class="controls"><button class="btn" id="restart">RESTART</button></div>
 
@@ -117,31 +128,46 @@ body::after{background:repeating-linear-gradient(180deg,transparent 0 2px,rgba(0
       <option value="off">Off</option>
     </select>
   </div>
+  <div class="setting-group">
+    <label for="touchSensitivity">Touch Sensitivity:</label>
+    <select id="touchSensitivity">
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+  </div>
   <div class="setting-buttons">
     <button class="close-settings" id="saveSettings">SAVE & CLOSE</button>
   </div>
 </div>
 
-<audio id="music" loop><source src="/static/audio/retro-game-arcade-236133.mp3" type="audio/mpeg"></audio>
-<audio id="eat"><source src="/static/audio/point-smooth-beep-230573.mp3" type="audio/mpeg"></audio>
-<audio id="over"><source src="/static/audio/game-over-arcade-6435.mp3" type="audio/mpeg"></audio>
+<audio id="music" loop><source src="/DaveNair1.github.io/static/audio/retro-game-arcade-236133.mp3" type="audio/mpeg"></audio>
+<audio id="eat"><source src="/DaveNair1.github.io/static/audio/point-smooth-beep-230573.mp3" type="audio/mpeg"></audio>
+<audio id="over"><source src="/DaveNair1.github.io/static/audio/game-over-arcade-6435.mp3" type="audio/mpeg"></audio>
 
 <script>
 const cv=document.getElementById('game'),ctx=cv.getContext('2d');
 const CELL=20,COLS=cv.width/CELL,ROWS=cv.height/CELL;
 let snake,food,obstacles=[],dir='r',next='r',score=0,high=+localStorage.getItem('snakeHigh')||0,start,tmInt,loop;
-let difficulty='easy',waveEffect=true,gameSpeed=180;
+let difficulty='easy',waveEffect=true,gameSpeed=180,touchSensitivity='medium';
 const sEl=document.getElementById('score'),hEl=document.getElementById('high'),tEl=document.getElementById('time'),note=document.getElementById('note');
 const music=document.getElementById('music'),eat=document.getElementById('eat'),over=document.getElementById('over');
 let mMute=localStorage.getItem('mMute')==='1',sMute=localStorage.getItem('sMute')==='1';
 const mBtn=document.getElementById('musicBtn'),sBtn=document.getElementById('sfxBtn');
 const settingsPanel=document.getElementById('settingsPanel'),difficultyDisplay=document.getElementById('difficultyDisplay');
 
+// Touch handling variables
+let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+let lastTouchTime = 0;
+const touchSensitivitySettings = {low: 80, medium: 50, high: 30};
+
 // Load settings
 difficulty = localStorage.getItem('gameDifficulty') || 'easy';
 waveEffect = localStorage.getItem('waveEffect') !== 'off';
+touchSensitivity = localStorage.getItem('touchSensitivity') || 'medium';
 document.getElementById('difficulty').value = difficulty;
 document.getElementById('waveEffect').value = waveEffect ? 'on' : 'off';
+document.getElementById('touchSensitivity').value = touchSensitivity;
 
 function updateDifficulty() {
   const speeds = {easy: 180, medium: 120, hard: 80};
@@ -165,6 +191,69 @@ function updateDifficulty() {
   }
 }
 
+// Touch event handlers
+function handleTouchStart(e) {
+  e.preventDefault();
+  const touch = e.touches[0] || e.changedTouches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  lastTouchTime = Date.now();
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
+  const touch = e.changedTouches[0];
+  touchEndX = touch.clientX;
+  touchEndY = touch.clientY;
+  handleSwipe();
+}
+
+function handleTouchMove(e) {
+  e.preventDefault(); // Prevent scrolling
+}
+
+function handleSwipe() {
+  const currentTime = Date.now();
+  if (currentTime - lastTouchTime > 500) return; // Ignore slow swipes
+  
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+  const minSwipeDistance = touchSensitivitySettings[touchSensitivity];
+  
+  // Determine if it's a valid swipe
+  if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) return;
+  
+  // Determine direction based on the dominant axis
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    // Horizontal swipe
+    if (deltaX > 0) {
+      next = 'r'; // Right
+    } else {
+      next = 'l'; // Left
+    }
+  } else {
+    // Vertical swipe
+    if (deltaY > 0) {
+      next = 'd'; // Down
+    } else {
+      next = 'u'; // Up
+    }
+  }
+  
+  // Provide haptic feedback if available
+  if (navigator.vibrate) {
+    navigator.vibrate(30);
+  }
+}
+
+// Add touch event listeners to canvas
+cv.addEventListener('touchstart', handleTouchStart, {passive: false});
+cv.addEventListener('touchend', handleTouchEnd, {passive: false});
+cv.addEventListener('touchmove', handleTouchMove, {passive: false});
+
+// Prevent context menu on long press
+cv.addEventListener('contextmenu', e => e.preventDefault());
+
 // Settings panel
 document.getElementById('settingsBtn').onclick = () => {
   settingsPanel.classList.add('show');
@@ -173,9 +262,11 @@ document.getElementById('settingsBtn').onclick = () => {
 document.getElementById('saveSettings').onclick = () => {
   difficulty = document.getElementById('difficulty').value;
   waveEffect = document.getElementById('waveEffect').value === 'on';
+  touchSensitivity = document.getElementById('touchSensitivity').value;
   
   localStorage.setItem('gameDifficulty', difficulty);
   localStorage.setItem('waveEffect', waveEffect ? 'on' : 'off');
+  localStorage.setItem('touchSensitivity', touchSensitivity);
   
   updateDifficulty();
   settingsPanel.classList.remove('show');
@@ -195,7 +286,28 @@ mBtn.onclick=()=>{mMute=!mMute;localStorage.setItem('mMute',mMute?'1':'0');updat
 sBtn.onclick=()=>{sMute=!sMute;localStorage.setItem('sMute',sMute?'1':'0');updateAudioBtns();};
 
 document.getElementById('restart').onclick=init;
-document.querySelectorAll('.mobile button').forEach(b=>b.onclick=()=>next=b.dataset.dir);
+
+// Enhanced mobile button handlers with touch feedback
+document.querySelectorAll('.mobile button').forEach(b => {
+  b.onclick = () => {
+    next = b.dataset.dir;
+    if (navigator.vibrate) navigator.vibrate(20);
+  };
+  
+  // Add touch event listeners for better responsiveness
+  b.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    b.style.transform = 'scale(0.9)';
+    next = b.dataset.dir;
+    if (navigator.vibrate) navigator.vibrate(20);
+  });
+  
+  b.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    b.style.transform = 'scale(1)';
+  });
+});
+
 document.addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
   if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){
@@ -241,7 +353,12 @@ function tick(){
   }
   
   snake.unshift(head);
-  if(head.x===food.x&&head.y===food.y){score++;playSound(eat);placeFood();}else snake.pop();
+  if(head.x===food.x&&head.y===food.y){
+    score++;
+    playSound(eat);
+    if (navigator.vibrate) navigator.vibrate(50); // Haptic feedback for eating
+    placeFood();
+  } else snake.pop();
   draw();updateUI();
 }
 
@@ -314,10 +431,17 @@ function draw(){
 function updateUI(){sEl.textContent=score;hEl.textContent=high;}
 function gameOver(){
   clearInterval(loop);clearInterval(tmInt);stopMusic();playSound(over);
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]); // Game over haptic pattern
   if(score>high){high=score;localStorage.setItem('snakeHigh',high);showMsg('NEW HIGH SCORE: '+high);}
   else showMsg('GAME OVER - Score: '+score);
 }
 function showMsg(msg){note.textContent=msg;note.classList.add('show');setTimeout(()=>note.classList.remove('show'),2500);}
+
+// Hide touch indicator after a few seconds
+setTimeout(() => {
+  const indicator = document.querySelector('.touch-indicator');
+  if (indicator) indicator.style.opacity = '0';
+}, 3000);
 
 updateDifficulty();
 updateAudioBtns();
