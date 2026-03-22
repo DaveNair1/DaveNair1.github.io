@@ -3937,6 +3937,222 @@
       }
     }
 
+
+
+    /* ---------- Final music icon and expand animation patch ---------- */
+    .music-controller {
+      transition: width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+                  height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-radius 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.24s ease,
+                  transform 0.24s ease,
+                  box-shadow 0.24s ease !important;
+      will-change: width, height, border-radius, transform, opacity;
+    }
+
+    .music-controller.minimized {
+      background: var(--terminal-green-light) !important;
+      border-color: rgba(0, 255, 65, 0.28) !important;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.22), 0 14px 30px rgba(0, 0, 0, 0.34) !important;
+    }
+
+    .music-controller .music-icon {
+      position: relative !important;
+      width: 100% !important;
+      height: 100% !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      overflow: hidden !important;
+    }
+
+    .music-controller.minimized .music-icon {
+      display: flex !important;
+      font-size: 0 !important;
+      color: transparent !important;
+    }
+
+    .music-controller.minimized .music-icon::before {
+      content: none !important;
+    }
+
+    .music-controller.minimized .music-icon .music-icon-symbol {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      font-size: 2.5rem !important;
+      line-height: 1 !important;
+      font-weight: 700 !important;
+      color: #000 !important;
+      text-shadow: none !important;
+      transform: translateY(-1px) !important;
+    }
+
+    .music-controller.opening .music-content,
+    .music-controller.closing .music-content {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: translateY(10px) !important;
+    }
+
+    .music-controller .music-content {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s !important;
+    }
+
+
+
+    /* ---------- Final spacing, bullet, and minimized audio icon fixes ---------- */
+    .skill-card .skill-details,
+    .exp-card .exp-details {
+      width: calc(100% - 3.6rem) !important;
+      max-width: calc(100% - 3.6rem) !important;
+      margin: 1rem auto 2rem !important;
+      padding: 1.35rem 1.45rem 2rem !important;
+      box-sizing: border-box !important;
+      align-self: center !important;
+    }
+
+    .exp-card .exp-details {
+      padding-bottom: 2.15rem !important;
+    }
+
+    .exp-card .exp-details ul {
+      list-style: none !important;
+      padding-left: 0 !important;
+      margin: 0 !important;
+    }
+
+    .exp-card .exp-details li {
+      position: relative !important;
+      padding-left: 1.5rem !important;
+      margin: 0 !important;
+    }
+
+    .exp-card .exp-details li::before {
+      content: '•' !important;
+      position: absolute !important;
+      left: 0 !important;
+      top: 0.02em !important;
+      color: rgba(214, 226, 214, 0.92) !important;
+      font-size: 1.05em !important;
+      line-height: 1 !important;
+    }
+
+    .exp-card .exp-details li + li {
+      margin-top: 0.95rem !important;
+    }
+
+    .exp-card .exp-details li code {
+      display: block !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    .exp-card .exp-resources,
+    .skill-card .skill-resources {
+      margin-top: 1.25rem !important;
+    }
+
+    .music-controller,
+    .music-controller.opening,
+    .music-controller.closing {
+      overflow: hidden !important;
+    }
+
+    .music-controller.minimized {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .music-controller.minimized .music-icon {
+      position: absolute !important;
+      inset: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      text-align: center !important;
+    }
+
+    .music-controller.minimized .music-icon .music-icon-symbol {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+      font-size: 3rem !important;
+      font-weight: 700 !important;
+      line-height: 1 !important;
+      color: #000 !important;
+      text-shadow: none !important;
+      transform: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .skill-card .skill-details,
+      .exp-card .exp-details {
+        width: calc(100% - 2rem) !important;
+        max-width: calc(100% - 2rem) !important;
+        margin: 0.95rem auto 1.5rem !important;
+        padding: 1.15rem 1rem 1.6rem !important;
+      }
+
+      .exp-card .exp-details li {
+        padding-left: 1.25rem !important;
+      }
+
+      .music-controller.minimized .music-icon .music-icon-symbol {
+        font-size: 2.45rem !important;
+      }
+    }
+
+
+
+    /* ---------- Final bottom spacing patch ---------- */
+    .exp-card .exp-details,
+    .skill-card .skill-details {
+      padding-bottom: 2.9rem !important;
+    }
+
+    .exp-card .exp-resources,
+    .skill-card .skill-resources {
+      margin-top: 1.35rem !important;
+      margin-bottom: 0.7rem !important;
+      padding-bottom: 0.15rem !important;
+    }
+
+    .exp-card .exp-resources a,
+    .skill-card .skill-resources a {
+      margin-bottom: 0.2rem !important;
+    }
+
+    @media (max-width: 768px) {
+      .exp-card .exp-details,
+      .skill-card .skill-details {
+        padding-bottom: 2.55rem !important;
+      }
+
+      .exp-card .exp-resources,
+      .skill-card .skill-resources {
+        margin-bottom: 0.55rem !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -4147,10 +4363,10 @@
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
           <ul>
-              <li><code>• Supported teaching spaces and hybrid sessions across day to day university operations</code></li>
-              <li><code>• Worked through technical issues practically and explained next steps clearly to users</code></li>
-              <li><code>• Assisted with projectors, microphones, audio, lecture capture, and connectivity issues</code></li>
-              <li><code>• Built strong habits in documentation, follow through, and adapting communication to different users</code></li>
+              <li><code>Supported teaching spaces and hybrid sessions across day to day university operations</code></li>
+              <li><code>Worked through technical issues practically and explained next steps clearly to users</code></li>
+              <li><code>Assisted with projectors, microphones, audio, lecture capture, and connectivity issues</code></li>
+              <li><code>Built strong habits in documentation, follow through, and adapting communication to different users</code></li>
             </ul>
           <div class="exp-resources">
             <a href="https://www.deakin.edu.au/" target="_blank">Deakin University</a>
@@ -4173,11 +4389,11 @@
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
           <ul>
-              <li><code>• Delivered website and platform improvements that balanced functionality, clarity, and user experience</code></li>
-              <li><code>• Worked with stakeholders to understand requirements and turn them into practical digital features</code></li>
-              <li><code>• Wrote code, fixed bugs, and refined front end behaviour across the application</code></li>
-              <li><code>• Collaborated through Git, code reviews, and regular team meetings</code></li>
-              <li><code>• Contributed to secure authentication and overall product quality</code></li>
+              <li><code>Delivered website and platform improvements that balanced functionality, clarity, and user experience</code></li>
+              <li><code>Worked with stakeholders to understand requirements and turn them into practical digital features</code></li>
+              <li><code>Wrote code, fixed bugs, and refined front end behaviour across the application</code></li>
+              <li><code>Collaborated through Git, code reviews, and regular team meetings</code></li>
+              <li><code>Contributed to secure authentication and overall product quality</code></li>
             </ul>
           <div class="exp-resources">
             <a href="https://www.djangoproject.com/" target="_blank">Django</a>
@@ -4200,10 +4416,10 @@
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
           <ul>
-              <li><code>• Delivered a working MVP within the internship timeframe</code></li>
-              <li><code>• Created a design system in Figma to support visual consistency across the product</code></li>
-              <li><code>• Used Alpine.js and HTMX to create more interactive page behaviour</code></li>
-              <li><code>• Documented the codebase clearly to support collaboration and handover</code></li>
+              <li><code>Delivered a working MVP within the internship timeframe</code></li>
+              <li><code>Created a design system in Figma to support visual consistency across the product</code></li>
+              <li><code>Used Alpine.js and HTMX to create more interactive page behaviour</code></li>
+              <li><code>Documented the codebase clearly to support collaboration and handover</code></li>
             </ul>
           <div class="exp-resources">
             <a href="https://www.figma.com/blog/design-systems-101-what-is-a-design-system/" target="_blank">Design Systems</a>
@@ -4226,10 +4442,10 @@
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
           <ul>
-              <li><code>• Redesigned use case pages based on approved design prototypes</code></li>
-              <li><code>• Integrated the Web Speech API into the chatbot to improve accessibility</code></li>
-              <li><code>• Improved Lighthouse accessibility results through code optimisation</code></li>
-              <li><code>• Incorporated client feedback during demos and two week development sprints</code></li>
+              <li><code>Redesigned use case pages based on approved design prototypes</code></li>
+              <li><code>Integrated the Web Speech API into the chatbot to improve accessibility</code></li>
+              <li><code>Improved Lighthouse accessibility results through code optimisation</code></li>
+              <li><code>Incorporated client feedback during demos and two week development sprints</code></li>
             </ul>
           <div class="exp-resources">
             <a href="https://github.com/Chameleon-company/MOP-Code" target="_blank"><i class="fa fa-github"></i> MOP-Code Repository</a>
@@ -4252,10 +4468,10 @@
         </div>
         <div class="exp-details" style="padding-bottom: 20px;">
           <ul>
-              <li><code>• Coordinated low fidelity and high fidelity wireframes in Figma across the UI/UX workstream</code></li>
-              <li><code>• Organised the Figma workspace and built reusable components, typography scales, and colour tokens</code></li>
-              <li><code>• Created interactive prototypes with accessibility in mind and refined designs through stakeholder feedback</code></li>
-              <li><code>• Worked closely with the Product Owner to align design decisions with sprint planning and delivery priorities</code></li>
+              <li><code>Coordinated low fidelity and high fidelity wireframes in Figma across the UI/UX workstream</code></li>
+              <li><code>Organised the Figma workspace and built reusable components, typography scales, and colour tokens</code></li>
+              <li><code>Created interactive prototypes with accessibility in mind and refined designs through stakeholder feedback</code></li>
+              <li><code>Worked closely with the Product Owner to align design decisions with sprint planning and delivery priorities</code></li>
             </ul>
           <div class="exp-resources">
             <a href="https://www.figma.com/" target="_blank">Figma</a>
@@ -5189,6 +5405,66 @@
     if (trackSwitchEl && !trackSwitchEl.querySelector('span')) {
       trackSwitchEl.innerHTML = '<i class="fa fa-random" aria-hidden="true"></i><span>Switch track</span>';
     }
+
+    
+
+    // ===== Final minimized icon and smooth expand patch =====
+    const MUSIC_PANEL_ANIMATION_MS = 340;
+
+    function finalizeExpandedMusicPanel() {
+      const controller = document.getElementById('musicController');
+      const minimizeBtn = document.getElementById('musicMinimize');
+      if (!controller) return;
+      controller.classList.remove('opening', 'closing');
+      controller.classList.remove('minimized');
+      if (minimizeBtn) {
+        minimizeBtn.textContent = '–';
+      }
+    }
+
+    function minimizeController() {
+      const controller = document.getElementById('musicController');
+      const minimizeBtn = document.getElementById('musicMinimize');
+      if (!controller) return;
+
+      if (controller.classList.contains('minimized')) {
+        controller.classList.add('opening');
+        controller.classList.remove('closing');
+        controller.classList.remove('minimized');
+        if (minimizeBtn) {
+          minimizeBtn.textContent = '–';
+        }
+        window.clearTimeout(controller._musicAnimationTimer);
+        controller._musicAnimationTimer = window.setTimeout(finalizeExpandedMusicPanel, MUSIC_PANEL_ANIMATION_MS);
+      } else {
+        controller.classList.add('closing');
+        controller.classList.remove('opening');
+        if (minimizeBtn) {
+          minimizeBtn.textContent = '▢';
+        }
+        window.clearTimeout(controller._musicAnimationTimer);
+        controller._musicAnimationTimer = window.setTimeout(() => {
+          controller.classList.add('minimized');
+          controller.classList.remove('closing');
+        }, 10);
+      }
+    }
+
+    function expandController() {
+      const controller = document.getElementById('musicController');
+      const minimizeBtn = document.getElementById('musicMinimize');
+      if (!controller || !controller.classList.contains('minimized')) return;
+
+      controller.classList.add('opening');
+      controller.classList.remove('closing');
+      controller.classList.remove('minimized');
+      if (minimizeBtn) {
+        minimizeBtn.textContent = '–';
+      }
+      window.clearTimeout(controller._musicAnimationTimer);
+      controller._musicAnimationTimer = window.setTimeout(finalizeExpandedMusicPanel, MUSIC_PANEL_ANIMATION_MS);
+    }
+
 
     // Call this when page loads
     setupUserInteractionListeners();
