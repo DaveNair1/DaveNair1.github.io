@@ -4531,7 +4531,7 @@
 
   <!-- RETRO FOOTER -->
   <footer>
-    <p><code>&copy; 2025 DAVE NAIR - All Rights Reserved.</code></p>
+    <p><code>&copy; 2026 DAVE NAIR - All Rights Reserved.</code></p>
     <div id="user-ip"><code>Loading location and weather...</code></div>
   </footer>
 
@@ -5239,19 +5239,55 @@
     });
 
     // ----- Fetch and display user's location and weather -----
-    fetch('https://ipapi.co/json/')
-      .then(response => response.json())
-      .then(data => {
-        const location = data.city + ', ' + data.region + ', ' + data.country_name;
-        return fetch('https://wttr.in/' + data.city + '?format=3')
-          .then(response => response.text())
-          .then(weather => {
-            document.getElementById('user-ip').textContent = location + ' | ' + weather;
+    const userIpEl = document.getElementById('user-ip');
+
+    function looksLikeHtmlResponse(text) {
+      return /<!doctype html|<html[\s>]|<head[\s>]|<body[\s>]/i.test(text || '');
+    }
+
+    function setFooterLocation(text) {
+      if (userIpEl) {
+        userIpEl.textContent = text;
+      }
+    }
+
+    async function loadLocationAndWeather() {
+      if (!userIpEl) return;
+
+      try {
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        if (!ipResponse.ok) {
+          throw new Error('Location request failed');
+        }
+
+        const data = await ipResponse.json();
+        const city = data.city || 'Melbourne';
+        const region = data.region || 'Victoria';
+        const country = data.country_name || 'Australia';
+        const location = [city, region, country].filter(Boolean).join(', ');
+
+        try {
+          const weatherUrl = 'https://wttr.in/' + encodeURIComponent(city) + '?format=%C+%t';
+          const weatherResponse = await fetch(weatherUrl, {
+            headers: { 'Accept': 'text/plain' }
           });
-      })
-      .catch(err => {
-        document.getElementById('user-ip').textContent = 'Location and weather unavailable';
-      });
+          const weatherText = (await weatherResponse.text()).trim();
+
+          if (!weatherResponse.ok || !weatherText || looksLikeHtmlResponse(weatherText)) {
+            setFooterLocation(location);
+            return;
+          }
+
+          setFooterLocation(location + ' | ' + weatherText);
+        } catch (weatherError) {
+          setFooterLocation(location);
+        }
+      } catch (err) {
+        setFooterLocation('Melbourne, Victoria, Australia');
+      }
+    }
+
+    loadLocationAndWeather();
 
     /* ===== Retro Terminal Window Controls to Trigger PC Off Screen ===== */
     function showPcOffScreen() {
